@@ -1,0 +1,6 @@
+import { Award, GraduationCap, Star } from "lucide-react";
+import { education } from "@/data/education";
+import { certifications } from "@/data/certifications";
+import { achievements } from "@/data/achievements";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+export function Credentials(){return <><section id="education" className="section"><div className="container"><SectionHeading eyebrow="Education" title="Built on analytics and computer science"/><div className="education-grid">{education.map(e=><article className="credential-card" key={e.degree}><GraduationCap/><div><p>{e.dates}</p><h3>{e.degree}</h3><strong>{e.school}</strong><span>{e.location}</span></div></article>)}</div></div></section><section id="certifications" className="section compact"><div className="container credentials-grid"><div><SectionHeading eyebrow="Certifications" title="Continuous learning"/><div className="cert-list">{certifications.map(c=><article key={c.name}><Award/><div><h3>{c.name}</h3><p>{c.issuer}{c.date ? ` · ${c.date}` : ""}</p></div></article>)}</div></div><div className="achievement-panel"><p className="eyebrow">Achievements</p>{achievements.map(a=><article key={a.title}><Star/><div><h3>{a.title}</h3><p>{a.detail}</p></div></article>)}</div></div></section></>}

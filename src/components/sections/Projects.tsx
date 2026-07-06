@@ -1,0 +1,4 @@
+import { ArrowUpRight } from "lucide-react";
+import { projects } from "@/data/projects";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+export function Projects(){return <section id="projects" className="section alt"><div className="container"><SectionHeading eyebrow="Selected projects" title="Analysis designed for action" intro="Academic and technical work presented through the problem, method, and business value."/><div className="project-grid">{projects.map((p,i)=><article className="project-card" key={p.name}><div className="project-no">0{i+1}</div><p className="project-category">{p.category}</p><h3>{p.name}</h3>{p.dates && <p className="muted">{p.dates}</p>}<p>{p.description}</p><ul>{p.points.map(x=><li key={x}>{x}</li>)}</ul><div className="badges">{p.tools.map(x=><span key={x}>{x}</span>)}</div><div className="impact"><ArrowUpRight/><p><strong>Impact</strong>{p.impact}</p></div></article>)}</div></div></section>}

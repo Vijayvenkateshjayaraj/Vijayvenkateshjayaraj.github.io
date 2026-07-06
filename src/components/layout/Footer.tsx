@@ -1,0 +1,3 @@
+import { Github, Linkedin, Mail } from "lucide-react";
+import { profile } from "@/data/profile";
+export function Footer() { return <footer><div className="container footer-inner"><div><strong>{profile.name}</strong><p>Data Analyst · Business & Data Analyst</p></div><div className="social-row"><a href={`mailto:${profile.email}`} aria-label="Email"><Mail /></a><a href={profile.links.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn"><Linkedin /></a><a href={profile.links.github} target="_blank" rel="noreferrer" aria-label="GitHub"><Github /></a></div><p>© {new Date().getFullYear()} {profile.shortName}</p></div></footer>; }
