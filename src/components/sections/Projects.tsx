@@ -1,25 +1,17 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import { ArrowLeft, ArrowRight, ArrowUpRight, LockKeyhole, ShieldCheck, X } from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { ArrowUpRight, ChevronDown, LockKeyhole, ShieldCheck, X } from "lucide-react";
 import { projects } from "@/data/projects";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
 type Project = (typeof projects)[number];
 
-const featuredProjectNames = [
-  "Product Label Comparison & Review Agent",
-  "M365 Governance Intelligence Platform",
-  "Regulatory Intelligence & AI Governance Agent",
-  "E-commerce / Business Analytics Agent"
-] as const;
 const projectsIntro = "A collection of AI, analytics, governance, and business-intelligence work. Open any project for its problem, solution, tools, and impact.";
 const matrixGlyphs = "01<>[]{}#/\\";
-
-function trimPreview(text: string, limit = 108) {
-  return text.length > limit ? `${text.slice(0, limit).trim()}...` : text;
-}
+const projectFilters = ["All", "AI Agents", "Analytics", "Governance", "Security"] as const;
+type ProjectFilter = (typeof projectFilters)[number];
 
 const reviewNotes = [
   { label: "Ingredient", change: "+ sunflower oil", className: "ingredient" },
@@ -514,19 +506,23 @@ function getProjectVisual(project: Project, autoPlay = false) {
   return null;
 }
 
+function matchesFilter(project: Project, filter: ProjectFilter) {
+  if (filter === "All") return true;
+  if (filter === "AI Agents") return project.category.includes("AI Agents") || project.category.includes("AI Automation");
+  if (filter === "Analytics") return project.category.includes("Analytics") || project.category.includes("Business Intelligence");
+  return project.category.includes(filter);
+}
+
 export function Projects() {
+  const reduceMotion = useReducedMotion();
   const [caseStudy, setCaseStudy] = useState<Project | null>(null);
-  const [activePreview, setActivePreview] = useState<string | null>(featuredProjectNames[0]);
+  const [activeFilter, setActiveFilter] = useState<ProjectFilter>("All");
+  const [selectedProject, setSelectedProject] = useState<Project>(projects[0]);
   const [typingRun, setTypingRun] = useState(-1);
   const [revealedCharacters, setRevealedCharacters] = useState(0);
   const [matrixGlyph, setMatrixGlyph] = useState("0");
-  const railRef = useRef<HTMLDivElement>(null);
-  const pointerStart = useRef({ x: 0, scrollLeft: 0, moved: false });
-  const featuredProjects = featuredProjectNames
-    .map((name) => projects.find((project) => project.name === name))
-    .filter((project): project is Project => Boolean(project));
-  const moreProjects = projects.filter((project) => !featuredProjectNames.includes(project.name as typeof featuredProjectNames[number]));
-  const railProjects = [...featuredProjects, ...moreProjects];
+  const hoverTimer = useRef<number | null>(null);
+  const visibleProjects = projects.filter((project) => matchesFilter(project, activeFilter));
 
   useEffect(() => {
     const section = document.getElementById("projects");
@@ -564,8 +560,24 @@ export function Projects() {
 
   const isIntroComplete = revealedCharacters >= projectsIntro.length;
 
-  function scrollRail(direction: number) {
-    railRef.current?.scrollBy({ left: direction * 420, behavior: "smooth" });
+  useEffect(() => {
+    if (!visibleProjects.some((project) => project.name === selectedProject.name)) setSelectedProject(visibleProjects[0]);
+  }, [activeFilter, selectedProject.name, visibleProjects]);
+
+  function selectProject(project: Project) {
+    if (hoverTimer.current) window.clearTimeout(hoverTimer.current);
+    setSelectedProject(project);
+  }
+
+  function scheduleHover(project: Project) {
+    if (hoverTimer.current) window.clearTimeout(hoverTimer.current);
+    hoverTimer.current = window.setTimeout(() => setSelectedProject(project), 150);
+  }
+
+  function moveSelection(current: Project, direction: number) {
+    const index = visibleProjects.findIndex((project) => project.name === current.name);
+    const next = visibleProjects[(index + direction + visibleProjects.length) % visibleProjects.length];
+    selectProject(next);
   }
 
   return (
@@ -584,91 +596,31 @@ export function Projects() {
           </span>
         </p>
 
-        <div className="project-rail-controls" aria-label="Project carousel controls">
-          <p>Drag, swipe, or scroll to explore</p>
-          <div>
-            <button type="button" onClick={() => scrollRail(-1)} aria-label="Scroll projects left"><ArrowLeft /></button>
-            <button type="button" onClick={() => scrollRail(1)} aria-label="Scroll projects right"><ArrowRight /></button>
-          </div>
+        <div className="project-filter-bar" role="toolbar" aria-label="Filter projects">
+          {projectFilters.map((filter) => <button key={filter} type="button" className={activeFilter === filter ? "is-active" : ""} aria-pressed={activeFilter === filter} onClick={() => setActiveFilter(filter)}>{filter}</button>)}
         </div>
 
-        <div
-          className="project-rail"
-          ref={railRef}
-          onScroll={(event) => {
-            const firstCard = event.currentTarget.children[0] as HTMLElement | undefined;
-            if (!firstCard) return;
-            const index = Math.round(event.currentTarget.scrollLeft / (firstCard.offsetWidth + 18));
-            const project = railProjects[index];
-            if (project) setActivePreview((current) => current === project.name ? current : project.name);
-          }}
-          onWheel={(event) => {
-            if (Math.abs(event.deltaY) > Math.abs(event.deltaX)) {
-              event.currentTarget.scrollLeft += event.deltaY;
-            }
-          }}
-          onPointerDown={(event) => {
-            pointerStart.current = { x: event.clientX, scrollLeft: event.currentTarget.scrollLeft, moved: false };
-            event.currentTarget.setPointerCapture(event.pointerId);
-          }}
-          onPointerMove={(event) => {
-            if (!event.currentTarget.hasPointerCapture(event.pointerId)) return;
-            const distance = event.clientX - pointerStart.current.x;
-            if (Math.abs(distance) > 6) pointerStart.current.moved = true;
-            event.currentTarget.scrollLeft = pointerStart.current.scrollLeft - distance;
-          }}
-          onPointerUp={(event) => {
-            if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-              event.currentTarget.releasePointerCapture(event.pointerId);
-            }
-          }}
-          onPointerCancel={(event) => {
-            if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-              event.currentTarget.releasePointerCapture(event.pointerId);
-            }
-          }}
-        >
-          {railProjects.map((project) => (
-            <article
-              className="featured-project-card project-rail-card"
-              key={project.name}
-              tabIndex={0}
-              role="button"
-              aria-label={`Open project details for ${project.name}`}
-              onPointerEnter={() => setActivePreview(project.name)}
-              onClick={() => !pointerStart.current.moved && setCaseStudy(project)}
-              onKeyDown={(event) => {
-                if (event.key === "Enter" || event.key === " ") {
-                  event.preventDefault();
-                  setActivePreview(project.name);
-                  setCaseStudy(project);
-                }
-              }}
-            >
-              {activePreview === project.name && !caseStudy ? getProjectVisual(project) : <div className="project-visual project-visual-placeholder" aria-hidden="true" />}
-              <div className="featured-project-copy">
-                <p className="project-category">{project.category}</p>
-                <h3>{project.name}</h3>
-                <p>{trimPreview(project.impact, 132)}</p>
-                <div className="featured-project-footer">
-                  <div className="badges">
-                    {project.tools.slice(0, 3).map((tool) => <span key={tool}>{tool}</span>)}
-                  </div>
-                  <button
-                    className="project-case-button"
-                    type="button"
-                    onPointerDown={(event) => event.stopPropagation()}
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      setCaseStudy(project);
-                    }}
-                  >
-                    View details <ArrowUpRight />
-                  </button>
-                </div>
-              </div>
-            </article>
-          ))}
+        <div className="project-explorer">
+          <nav className="project-navigator" aria-label="Project navigation">
+            <p>Project index <span>{String(selectedProject ? visibleProjects.findIndex((project) => project.name === selectedProject.name) + 1 : 0).padStart(2, "0")}/{String(visibleProjects.length).padStart(2, "0")}</span></p>
+            <div role="list">
+              {visibleProjects.map((project, index) => <button key={project.name} type="button" role="listitem" className={selectedProject.name === project.name ? "is-active" : ""} aria-current={selectedProject.name === project.name ? "true" : undefined} onClick={() => selectProject(project)} onFocus={() => selectProject(project)} onMouseEnter={() => scheduleHover(project)} onMouseLeave={() => hoverTimer.current && window.clearTimeout(hoverTimer.current)} onKeyDown={(event) => { if (event.key === "ArrowDown" || event.key === "ArrowRight") { event.preventDefault(); moveSelection(project, 1); } if (event.key === "ArrowUp" || event.key === "ArrowLeft") { event.preventDefault(); moveSelection(project, -1); } }}><span>{String(index + 1).padStart(2, "0")}</span>{project.name}</button>)}
+            </div>
+          </nav>
+
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.article key={selectedProject.name} className="project-feature" initial={reduceMotion ? false : { opacity: 0, scale: .985 }} animate={{ opacity: 1, scale: 1 }} exit={reduceMotion ? undefined : { opacity: 0, scale: 1.01 }} transition={{ duration: reduceMotion ? 0 : .28, ease: [0.22, 1, 0.36, 1] }}>
+              <div className="project-feature-visual">{getProjectVisual(selectedProject, true)}</div>
+              <div className="project-feature-copy"><p className="project-category">{selectedProject.category}</p><h3>{selectedProject.name}</h3><p>{selectedProject.description}</p><div className="badges">{selectedProject.tools.slice(0, 5).map((tool) => <span key={tool}>{tool}</span>)}</div><div className="project-impact"><strong>Business impact</strong><p>{selectedProject.impact}</p></div><button className="project-case-button" type="button" onClick={() => setCaseStudy(selectedProject)}>View project <ArrowUpRight /></button></div>
+            </motion.article>
+          </AnimatePresence>
+        </div>
+
+        <div className="project-accordion" aria-label="Project explorer">
+          {visibleProjects.map((project, index) => {
+            const open = selectedProject.name === project.name;
+            return <article key={project.name} className={open ? "is-open" : ""}><button type="button" aria-expanded={open} aria-controls={`project-panel-${index}`} onClick={() => selectProject(project)} onFocus={() => selectProject(project)}><span>{String(index + 1).padStart(2, "0")}</span>{project.name}<ChevronDown /></button><AnimatePresence initial={false}>{open && <motion.div id={`project-panel-${index}`} className="project-accordion-panel" initial={reduceMotion ? false : { height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={reduceMotion ? undefined : { height: 0, opacity: 0 }} transition={{ duration: reduceMotion ? 0 : .24 }}><div className="project-feature-visual">{getProjectVisual(project, true)}</div><p className="project-category">{project.category}</p><p>{project.description}</p><div className="badges">{project.tools.slice(0, 4).map((tool) => <span key={tool}>{tool}</span>)}</div><p className="project-impact"><strong>Impact: </strong>{project.impact}</p><button className="project-case-button" type="button" onClick={() => setCaseStudy(project)}>View project <ArrowUpRight /></button></motion.div>}</AnimatePresence></article>;
+          })}
         </div>
       </div>
 
