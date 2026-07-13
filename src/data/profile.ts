@@ -29,8 +29,8 @@ export const profile = {
 } as const;
 
 export const navigation = [
-  ["Home", "#home"],
-  ["Work", "#projects"],
   ["About", "#about"],
+  ["Experience", "#experience"],
+  ["Projects", "#projects"],
   ["Contact", "#contact"]
 ] as const;

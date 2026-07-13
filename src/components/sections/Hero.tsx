@@ -1,18 +1,92 @@
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
 import {
-  Activity,
   ArrowRight,
   ArrowUpRight,
   BrainCircuit,
   CheckCircle2,
   Download,
   Orbit,
-  Sparkles,
 } from "lucide-react";
 import Image from "next/image";
 import { profile } from "@/data/profile";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 
+const matrixGlyphs = "01<>[]{}#/\\";
+const matrixSummary = profile.summary.replace(/\.$/, "");
+const orchestrationNodes = [
+  { label: "OCR", tooltip: "Extracts text from documents and images", x: 50, y: 9 },
+  { label: "Computer Vision", tooltip: "Understands visual content and layout", x: 79, y: 21 },
+  { label: "Embeddings", tooltip: "Transforms meaning into searchable vectors", x: 91, y: 50 },
+  { label: "RAG", tooltip: "Grounds responses in enterprise knowledge", x: 79, y: 79 },
+  { label: "LLM Inference", tooltip: "Generates context-aware intelligence", x: 50, y: 91 },
+  { label: "AI Agents", tooltip: "Plans and executes multi-step workflows", x: 21, y: 79 },
+  { label: "Validation", tooltip: "Checks quality, accuracy, and policy", x: 9, y: 50 },
+  { label: "API Integration", tooltip: "Connects models to business systems", x: 21, y: 21 },
+] as const;
+
 export function Hero() {
+  const [animationRun, setAnimationRun] = useState(0);
+  const [revealedCharacters, setRevealedCharacters] = useState(0);
+  const [matrixGlyph, setMatrixGlyph] = useState("0");
+
+  const replaySummary = useCallback(() => {
+    setAnimationRun((run) => run + 1);
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("hero-replay", replaySummary);
+    return () => window.removeEventListener("hero-replay", replaySummary);
+  }, [replaySummary]);
+
+  useEffect(() => {
+    const hero = document.getElementById("home");
+    if (!hero) return;
+
+    let hasLeftHome = false;
+    const handleScroll = () => {
+      const bounds = hero.getBoundingClientRect();
+      const hasLeftViewport = bounds.bottom <= 0 || bounds.top >= window.innerHeight;
+      const hasReturnedHome = bounds.top < window.innerHeight * 0.65 && bounds.bottom > window.innerHeight * 0.25;
+
+      if (hasLeftViewport) hasLeftHome = true;
+      if (hasLeftHome && hasReturnedHome) {
+        replaySummary();
+        hasLeftHome = false;
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [replaySummary]);
+
+  useEffect(() => {
+    setRevealedCharacters(0);
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setRevealedCharacters(matrixSummary.length);
+      return;
+    }
+
+    let character = 0;
+    const interval = window.setInterval(() => {
+      // Reveal a small group at a time so the typewriter effect does not
+      // schedule a React render for every individual character.
+      character = Math.min(character + 3, matrixSummary.length);
+      setRevealedCharacters(character);
+      setMatrixGlyph(matrixGlyphs[character % matrixGlyphs.length]);
+
+      if (character >= matrixSummary.length) {
+        window.clearInterval(interval);
+      }
+    }, 42);
+
+    return () => window.clearInterval(interval);
+  }, [animationRun]);
+
+  const isComplete = revealedCharacters >= matrixSummary.length;
+
   return (
     <section id="home" className="hero">
       <div className="container hero-grid">
@@ -39,8 +113,13 @@ export function Hero() {
             AI systems with <span>business clarity.</span>
           </h1>
           <h2>{profile.headline}</h2>
-          <p className="hero-copy">
-            {profile.summary}
+          <p className="hero-copy matrix-copy" aria-label={matrixSummary}>
+            <span className="matrix-copy-measure" aria-hidden="true">{matrixSummary}</span>
+            <span className="matrix-copy-output" aria-hidden="true">
+              {matrixSummary.slice(0, revealedCharacters)}
+              {!isComplete && <span className="matrix-cursor">{matrixGlyph}</span>}
+              {isComplete && <span className="matrix-cursor matrix-cursor-idle">_</span>}
+            </span>
           </p>
           <div className="hero-actions">
             <ButtonLink href="#projects">
@@ -58,45 +137,47 @@ export function Hero() {
           </div>
         </div>
 
-        <aside className="signal-console" aria-label="Decision intelligence system visualization">
+        <aside className="signal-console orchestration-console" aria-label="AI orchestration engine visualization">
           <div className="console-glow console-glow-a" />
           <div className="console-glow console-glow-b" />
           <header className="console-header">
-            <span><Activity /> Decision engine</span>
-            <strong><i /> Live</strong>
+            <span><Orbit /> Intelligence architecture</span>
+            <strong><i /> Active</strong>
           </header>
-          <div className="console-grid">
-            <div className="signal-radar" aria-hidden="true">
-              <div className="radar-ring radar-ring-a" />
-              <div className="radar-ring radar-ring-b" />
-              <div className="radar-ring radar-ring-c" />
-              <div className="radar-sweep" />
-              <div className="radar-core"><BrainCircuit /></div>
-              <span className="radar-dot dot-a" />
-              <span className="radar-dot dot-b" />
-              <span className="radar-dot dot-c" />
+          <div className="orchestration-visual">
+            <div className="orbit-ring orbit-ring-a" />
+            <div className="orbit-ring orbit-ring-b" />
+            <div className="orbit-particles" aria-hidden="true">{Array.from({ length: 12 }, (_, index) => <i key={index} />)}</div>
+            <div className="orchestration-orbit">
+              <svg className="orchestration-links" viewBox="0 0 100 100" aria-hidden="true">
+                {orchestrationNodes.map((node, index) => (
+                  <g key={node.label}>
+                    <line x1="50" y1="50" x2={node.x} y2={node.y} />
+                    <circle className="signal-pulse" r="0.85">
+                      <animateMotion dur={`${5.4 + index * .35}s`} repeatCount="indefinite" path={`M 50 50 L ${node.x} ${node.y}`} begin={`${index * -.7}s`} />
+                    </circle>
+                  </g>
+                ))}
+              </svg>
+              {orchestrationNodes.map((node, index) => (
+                <div className={`orbit-node-position node-${index}`} key={node.label}>
+                  <div className="orbit-node-motion">
+                    <button type="button" className="orchestration-node" aria-label={`${node.label}: ${node.tooltip}`}>
+                      <span>{node.label}</span>
+                      <small role="tooltip">{node.tooltip}</small>
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className="console-stat stat-confidence">
-              <span>Insight confidence</span>
-              <strong>98.4<small>%</small></strong>
-              <div><i /><i /><i /><i /><i /></div>
-            </div>
-            <div className="console-stat stat-systems">
-              <Orbit />
-              <span>Connected systems</span>
-              <strong>04</strong>
+            <div className="orchestration-core">
+              <BrainCircuit />
+              <span>AI Orchestration</span>
+              <strong>Engine</strong>
+              <i />
             </div>
           </div>
-          <div className="console-query">
-            <Sparkles />
-            <div><span>Business question</span><strong>Where should we focus next?</strong></div>
-          </div>
-          <div className="console-answer">
-            <span>Recommended path</span>
-            <div><i /> Automate reporting → surface risk → act faster</div>
-          </div>
-          <div className="floating-signal signal-one"><span>INPUT</span><strong>Enterprise data</strong></div>
-          <div className="floating-signal signal-two"><span>OUTPUT</span><strong>Clear action</strong></div>
+          <div className="orchestration-status"><span><i /> 8 capabilities synchronized</span><b>Signal flow nominal</b></div>
         </aside>
       </div>
     </section>

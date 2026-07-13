@@ -1,14 +1,18 @@
 import { BriefcaseBusiness, MapPin } from "lucide-react";
 import { experience } from "@/data/experience";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { MatrixTypingText } from "@/components/ui/MatrixTypingText";
 export function Experience() {
   return (
     <section id="experience" className="section alt">
       <div className="container">
         <SectionHeading
           eyebrow="Experience"
-          title="Building analytics, automation, and AI solutions for real business workflows"
-          intro="Experience across business analytics, enterprise reporting, data validation, cloud workflows, and AI-powered automation."
+          title="Turning business challenges into working solutions"
+        />
+        <MatrixTypingText
+          sectionId="experience"
+          text="Experience across business analytics, enterprise reporting, data validation, cloud workflows, and AI-powered automation."
         />
 
         <div className="timeline">

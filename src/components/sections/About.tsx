@@ -14,7 +14,7 @@ export function About() {
       <div className="container about-grid">
         <SectionHeading
           eyebrow="About"
-          title="Connecting data, automation, and AI to solve business problems"
+          title="Solving problems with data and AI"
         />
 
         <div>
