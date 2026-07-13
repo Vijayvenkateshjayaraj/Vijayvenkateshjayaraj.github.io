@@ -2,12 +2,12 @@ export const profile = {
   name: "Vijayvenkatesh Jayaraj",
   shortName: "Vijay Jayaraj",
 
-  title: "Data and Business Analyst | AI Automation",
+  title: "AI Engineer & Business Analyst | Decision Intelligence",
 
-  headline: "Building analytics and AI-powered solutions for real business problems",
+  headline: "Engineering AI systems that turn business complexity into confident decisions",
 
   summary:
-    "I turn business data, enterprise workflows, and manual processes into reliable insights, automated reporting, and AI-powered solutions.",
+    "I engineer AI-enabled decision systems that turn business data, enterprise workflows, and manual processes into reliable insights, automated reporting, and action.",
 
   about:
     "I’m Vijay, a Data Analyst and Business Analytics graduate focused on building dashboards, reporting automations, data validation workflows, cloud analytics solutions, and AI-powered agents. My work combines analytics, automation, and enterprise systems to help business teams reduce manual effort, improve data accuracy, and make faster decisions.",
@@ -30,11 +30,7 @@ export const profile = {
 
 export const navigation = [
   ["Home", "#home"],
+  ["Work", "#projects"],
   ["About", "#about"],
-  ["Experience", "#experience"],
-  ["Skills", "#skills"],
-  ["Projects", "#projects"],
-  ["Education", "#education"],
-  ["Certifications", "#certifications"],
   ["Contact", "#contact"]
 ] as const;

@@ -10,36 +10,51 @@ import { Contact } from "@/components/sections/Contact";
 import { profile } from "@/data/profile";
 
 export default function Home() {
-  const personJsonLd = {
+  const siteUrl = "https://vijayvenkateshjayaraj.github.io";
+  const profileImageUrl = `${siteUrl}/vijay-jayaraj-profile.jpg`;
+  const profilePageJsonLd = {
     "@context": "https://schema.org",
-    "@type": "Person",
-    name: profile.name,
-    alternateName: ["Vijay Venkatesh Jayaraj", profile.shortName],
-    url: "https://vijayvenkateshjayaraj.github.io",
-    email: `mailto:${profile.email}`,
-    jobTitle: profile.title,
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Plainsboro",
-      addressRegion: "NJ",
-      addressCountry: "US"
+    "@type": "ProfilePage",
+    url: siteUrl,
+    primaryImageOfPage: {
+      "@type": "ImageObject",
+      contentUrl: profileImageUrl,
+      width: 768,
+      height: 1024,
+      caption: "Vijayvenkatesh Jayaraj"
     },
-    sameAs: [profile.links.linkedin, profile.links.github],
-    knowsAbout: [
-      "Data analysis",
-      "Business intelligence",
-      "ETL automation",
-      "Healthcare analytics",
-      "Enterprise systems",
-      "AI automation"
-    ]
+    mainEntity: {
+      "@type": "Person",
+      "@id": `${siteUrl}/#vijayvenkatesh-jayaraj`,
+      name: profile.name,
+      alternateName: ["Vijay Venkatesh Jayaraj", profile.shortName],
+      url: siteUrl,
+      image: profileImageUrl,
+      email: `mailto:${profile.email}`,
+      jobTitle: profile.title,
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Plainsboro",
+        addressRegion: "NJ",
+        addressCountry: "US"
+      },
+      sameAs: [profile.links.linkedin, profile.links.github],
+      knowsAbout: [
+        "Data analysis",
+        "Business intelligence",
+        "ETL automation",
+        "Healthcare analytics",
+        "Enterprise systems",
+        "AI automation"
+      ]
+    }
   };
 
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(profilePageJsonLd) }}
       />
       <Navbar/>
       <main><Hero/><About/><Experience/><Skills/><Projects/><Credentials/><Contact/></main>

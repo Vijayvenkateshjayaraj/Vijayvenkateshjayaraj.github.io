@@ -102,6 +102,30 @@ export const projects = [
     "Helped turn changing regulatory web content into searchable, version-controlled, and audit-friendly intelligence."
   },
   {
+    name: "E-commerce / Business Analytics Agent",
+    dates: "2025 – Present",
+    category: "Business Analytics / AI Agents",
+    description:
+      "Built an analytics-agent concept for e-commerce and business teams to explore sales trends, product performance, customer behavior, and operational signals through natural-language analysis.",
+    points: [
+      "Designed agent workflows for KPI lookup, sales trend summaries, product-performance analysis, and business-question answering.",
+      "Structured analytical outputs around revenue, conversion, customer segments, product categories, and operational decision points.",
+      "Used prompt engineering and reporting logic to turn business questions into concise, stakeholder-ready insights.",
+      "Created a reusable analytics pattern that can connect dashboards, tabular data, and AI-assisted business reporting."
+    ],
+    tools: [
+      "Python",
+      "SQL",
+      "Business Intelligence",
+      "Prompt Engineering",
+      "AI Agents",
+      "Dashboarding",
+      "Data Analysis"
+    ],
+    impact:
+      "Helped business users move from static reports to faster, question-driven insight discovery for sales and operational decisions."
+  },
+  {
     name: "Business Document Review Agent",
     dates: "2025 – Present",
     category: "AI Agents / Workflow Automation",
