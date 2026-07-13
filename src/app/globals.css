@@ -545,6 +545,7 @@ svg { flex: none; }
 .cert-list p, .achievement-panel p { margin: 5px 0 0; color: #a1bac8; font-size: .79rem; }
 .achievement-panel { align-self: start; padding: 27px; border: 1px solid rgba(122, 224, 244, .23); border-radius: 17px; background: radial-gradient(circle at 100% 0, rgba(91, 241, 206, .17), transparent 12rem), linear-gradient(145deg, #102c40, #081827); box-shadow: 0 20px 48px rgba(0, 0, 0, .24), inset 0 1px rgba(255, 255, 255, .07); }
 .achievement-panel article { border-color: rgba(151, 224, 243, .14); }
+#certifications { padding-bottom: 0; }
 .contact-section { padding: 0 0 88px; }
 .contact-card { position: relative; display: grid; grid-template-columns: 1.4fr .75fr; gap: clamp(35px, 8vw, 90px); padding: clamp(34px, 5vw, 64px); overflow: hidden; border: 1px solid rgba(131, 226, 244, .28); border-radius: 22px; background: radial-gradient(circle at 87% 8%, rgba(91, 241, 206, .22), transparent 18rem), radial-gradient(circle at 13% 105%, rgba(114, 156, 255, .18), transparent 19rem), linear-gradient(130deg, #0d2638, #0a1a2a 69%); box-shadow: 0 25px 70px rgba(0, 0, 0, .32), inset 0 1px rgba(255, 255, 255, .1); }
 .contact-card::before { position: absolute; inset: 11px; content: ""; pointer-events: none; border: 1px solid rgba(137, 235, 239, .12); border-radius: 15px; }
