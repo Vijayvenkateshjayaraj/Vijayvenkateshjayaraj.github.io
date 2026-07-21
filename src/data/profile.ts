@@ -20,7 +20,7 @@ export const profile = {
   resume: "/Vijayvenkatesh_Jayaraj_Resume.pdf",
 
   links: {
-    linkedin: "https://www.linkedin.com/in/vijayvenkatesh-jayaraj-aa9b73251/",
+    linkedin: "https://www.linkedin.com/in/vijayvenkatesh-jayaraj-766139139/",
     github: "https://github.com/Vijayvenkateshjayaraj"
   },
 
