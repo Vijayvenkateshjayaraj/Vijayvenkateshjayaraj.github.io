@@ -13,7 +13,7 @@ export const profile = {
     "I’m Vijay, a Data Analyst and Business Analytics graduate focused on building dashboards, reporting automations, data validation workflows, cloud analytics solutions, and AI-powered agents. My work combines analytics, automation, and enterprise systems to help business teams reduce manual effort, improve data accuracy, and make faster decisions.",
 
   email: "vijayvenkateshj012@gmail.com",
-  location: "Plainsboro, New Jersey, USA",
+  location: "Princeton, New Jersey, USA",
   phone: "",
   showPhone: false,
 
