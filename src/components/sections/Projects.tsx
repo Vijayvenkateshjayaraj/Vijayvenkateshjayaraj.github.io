@@ -8,7 +8,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 
 type Project = (typeof projects)[number];
 
-const projectsIntro = "A collection of AI, analytics, governance, and business-intelligence work. Open any project for its problem, solution, tools, and impact.";
+const projectsIntro = "Nine end-to-end builds across AI agents, analytics, governance, security, and enterprise automation. Explore each system by problem, architecture, tools, and business impact.";
 const matrixGlyphs = "01<>[]{}#/\\";
 const projectFilters = ["All", "AI Agents", "Analytics", "Governance", "Security"] as const;
 type ProjectFilter = (typeof projectFilters)[number];
@@ -584,8 +584,8 @@ export function Projects() {
     <section id="projects" className="section alt">
       <div className="container">
         <SectionHeading
-          eyebrow="Work"
-          title="Selected projects"
+          eyebrow="Selected work · 09 systems"
+          title="Systems, not side projects"
         />
         <p className="section-intro matrix-copy" aria-label={projectsIntro}>
           <span className="matrix-copy-measure" aria-hidden="true">{projectsIntro}</span>

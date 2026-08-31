@@ -8,11 +8,11 @@ export function Experience() {
       <div className="container">
         <SectionHeading
           eyebrow="Experience"
-          title="Turning business challenges into working solutions"
+          title="Enterprise experience with a builder’s mindset"
         />
         <MatrixTypingText
           sectionId="experience"
-          text="Experience across business analytics, enterprise reporting, data validation, cloud workflows, and AI-powered automation."
+          text="Across consulting and analytics roles, I have moved between the business question, the data layer, and the production workflow."
         />
 
         <div className="timeline">

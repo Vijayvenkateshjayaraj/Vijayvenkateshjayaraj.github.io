@@ -5,8 +5,8 @@ import {
   ArrowRight,
   ArrowUpRight,
   BrainCircuit,
-  CheckCircle2,
   Download,
+  MapPin,
   Orbit,
 } from "lucide-react";
 import Image from "next/image";
@@ -104,15 +104,15 @@ export function Hero() {
             <div>
               <div className="hero-kicker">
                 <span className="availability"><i /> Available for new opportunities</span>
-                <span className="hero-coordinates">40.3573° N · 74.6004° W</span>
+                <span className="hero-coordinates"><MapPin /> Princeton, New Jersey</span>
               </div>
-              <p className="eyebrow">{profile.name} · Decision Intelligence</p>
+              <p className="eyebrow">{profile.name}</p>
             </div>
           </div>
           <h1>
-            AI systems with <span>business clarity.</span>
+            AI systems that turn complexity into <span>clear decisions.</span>
           </h1>
-          <h2>{profile.headline}</h2>
+          <h2>{profile.title}</h2>
           <p className="hero-copy matrix-copy" aria-label={matrixSummary}>
             <span className="matrix-copy-measure" aria-hidden="true">{matrixSummary}</span>
             <span className="matrix-copy-output" aria-hidden="true">
@@ -123,17 +123,20 @@ export function Hero() {
           </p>
           <div className="hero-actions">
             <ButtonLink href="#projects">
-              Explore selected work <ArrowRight size={18} />
+              Explore the systems <ArrowRight size={18} />
             </ButtonLink>
             <ButtonLink href="#contact" variant="secondary">
-              Let&apos;s build something <ArrowUpRight size={17} />
+              Start a conversation <ArrowUpRight size={17} />
             </ButtonLink>
           </div>
+          <div className="hero-proof-grid" aria-label="Portfolio highlights">
+            <span><strong>09</strong><small>End-to-end projects</small></span>
+            <span><strong>02</strong><small>Enterprise roles</small></span>
+            <span><strong>03</strong><small>Core lanes: AI, data, governance</small></span>
+          </div>
           <div className="hero-meta-row">
-            <a className="resume-link" href={profile.resume} download>
-              <Download size={16} /> Download resume
-            </a>
-            <span><CheckCircle2 size={16} /> Analytics · Automation · AI Agents</span>
+            <a className="resume-link" href={profile.resume} download><Download size={16} /> Download résumé</a>
+            <span>From business question to production workflow</span>
           </div>
         </div>
 
@@ -141,8 +144,8 @@ export function Hero() {
           <div className="console-glow console-glow-a" />
           <div className="console-glow console-glow-b" />
           <header className="console-header">
-            <span><Orbit /> Intelligence architecture</span>
-            <strong><i /> Active</strong>
+            <span><Orbit /> Decision system canvas</span>
+            <strong><i /> Live architecture</strong>
           </header>
           <div className="orchestration-visual">
             <div className="orbit-ring orbit-ring-a" />
@@ -172,12 +175,12 @@ export function Hero() {
             </div>
             <div className="orchestration-core">
               <BrainCircuit />
-              <span>AI Orchestration</span>
-              <strong>Engine</strong>
+              <span>Decision</span>
+              <strong>Intelligence</strong>
               <i />
             </div>
           </div>
-          <div className="orchestration-status"><span><i /> 8 capabilities synchronized</span><b>Signal flow nominal</b></div>
+          <div className="orchestration-status"><span><i /> 8 capabilities connected</span><b>Observe · reason · act · govern</b></div>
         </aside>
       </div>
     </section>

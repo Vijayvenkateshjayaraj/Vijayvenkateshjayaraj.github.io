@@ -6,13 +6,13 @@ import { profile } from "@/data/profile";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 
 const contactHeadlines = [
-  "Ready to transform your workflows with AI?",
-  "Got a process slowing your team down?",
-  "Have an idea ready to become a solution?",
-  "Wondering where AI fits in your business?",
-  "Looking to integrate AI into your operations?"
+  "Need someone who can connect business, data, and AI?",
+  "Have a workflow that should be smarter?",
+  "Turning an AI idea into a dependable system?",
+  "Need clarity before you add more technology?",
+  "Looking for a builder who speaks business?"
 ];
-const contactMessage = "I’m open to roles and opportunities where I can turn business needs into reliable analytics, automation, and AI-powered solutions";
+const contactMessage = "I’m open to AI engineering, business analysis, analytics automation, and decision-intelligence opportunities where the outcome matters as much as the technology.";
 const matrixGlyphs = "01<>[]{}#/\\";
 
 export function Contact() {

@@ -37,7 +37,10 @@ export function Navbar() {
       <nav className="container nav" aria-label="Primary navigation">
         <a className="brand" href="#home" aria-label="Home" onClick={() => handleNavigation("#home")}>
           <span>VJ</span>
-          <strong>{profile.shortName}</strong>
+          <span className="brand-copy">
+            <strong>{profile.shortName}</strong>
+            <small>Decision intelligence portfolio</small>
+          </span>
         </a>
 
         <button

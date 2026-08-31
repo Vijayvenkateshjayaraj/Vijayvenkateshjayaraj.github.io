@@ -4,7 +4,7 @@ import { profile } from "@/data/profile";
 import "./globals.css";
 
 const siteUrl = "https://vijayvenkateshjayaraj.github.io";
-const profileImage = "/vijay-jayaraj-profile.jpg";
+const socialImage = "/og.png";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     template: "%s | Vijayvenkatesh Jayaraj"
   },
   description:
-    "Official portfolio of Vijayvenkatesh Jayaraj, an AI engineer and business analyst building decision intelligence, analytics systems, enterprise automation, and AI agents.",
+    "Portfolio of Vijay Jayaraj, an AI engineer and business analyst building decision-intelligence systems, enterprise automation, analytics platforms, and AI agents.",
   keywords: [
     "Vijayvenkatesh Jayaraj",
     "Vijay Venkatesh Jayaraj",
@@ -40,26 +40,26 @@ export const metadata: Metadata = {
   openGraph: {
     type: "profile",
     url: siteUrl,
-    title: "Vijayvenkatesh Jayaraj | Data Analyst Portfolio",
+    title: "Vijay Jayaraj | AI Engineer & Business Analyst",
     description:
-      "Data and business analytics portfolio covering dashboards, ETL automation, healthcare analytics, enterprise systems, and AI-powered workflow solutions.",
-    siteName: "Vijayvenkatesh Jayaraj Portfolio",
+      "AI systems that turn business complexity into clear decisions across analytics, automation, governance, and enterprise workflows.",
+    siteName: "Vijay Jayaraj · Decision Intelligence Portfolio",
     locale: "en_US",
     images: [
       {
-        url: profileImage,
-        width: 768,
-        height: 1024,
-        alt: "Vijayvenkatesh Jayaraj"
+        url: socialImage,
+        width: 1200,
+        height: 630,
+        alt: "Vijay Jayaraj — AI Engineer and Business Analyst"
       }
     ]
   },
   twitter: {
-    card: "summary",
-    title: "Vijayvenkatesh Jayaraj | Data Analyst Portfolio",
+    card: "summary_large_image",
+    title: "Vijay Jayaraj | AI Engineer & Business Analyst",
     description:
-      "Data and business analytics portfolio covering dashboards, ETL automation, healthcare analytics, enterprise systems, and AI-powered workflow solutions.",
-    images: [profileImage]
+      "AI systems that turn business complexity into clear decisions across analytics, automation, governance, and enterprise workflows.",
+    images: [socialImage]
   },
   robots: {
     index: true,
