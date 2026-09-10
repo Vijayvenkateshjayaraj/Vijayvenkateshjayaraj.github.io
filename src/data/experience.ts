@@ -1,6 +1,6 @@
 export const experience = [
   {
-    title: "Data Analyst Intern",
+    title: "AI & Business Solution Analyst",
     company: "Princeton IT Services",
     location: "Princeton, New Jersey",
     dates: "May 2025 – Present",

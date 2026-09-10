@@ -12,7 +12,7 @@ const contactHeadlines = [
   "Need clarity before you add more technology?",
   "Looking for a builder who speaks business?"
 ];
-const contactMessage = "I’m open to AI engineering, business analysis, analytics automation, and decision-intelligence opportunities where the outcome matters as much as the technology.";
+const contactMessage = "I’m open to AI and business solution analysis, analytics automation, and decision-intelligence opportunities where the outcome matters as much as the technology.";
 const matrixGlyphs = "01<>[]{}#/\\";
 
 export function Contact() {
