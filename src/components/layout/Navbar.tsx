@@ -3,23 +3,36 @@ import { useEffect, useRef, useState } from "react";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { navigation, profile } from "@/data/profile";
 
-function toggleTheme() {
-  const root = document.documentElement;
-  // Dark is the default look; light is an opt-in theme.
-  const next = root.dataset.theme === "light" ? "dark" : "light";
-  root.dataset.theme = next;
-  try {
-    localStorage.setItem("theme", next);
-  } catch {
-    // Storage can be unavailable (private mode); the choice still applies for this visit.
-  }
+// Keeps the mobile browser toolbar colour in step with the page theme.
+function syncThemeColor(theme: "light" | "dark") {
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "light" ? "#f4f5fb" : "#05060a");
 }
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeHref, setActiveHref] = useState("");
+  const [isLight, setIsLight] = useState(false);
   const progressRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    const light = document.documentElement.dataset.theme === "light";
+    setIsLight(light);
+    syncThemeColor(light ? "light" : "dark");
+  }, []);
+
+  const toggleTheme = () => {
+    // Dark is the default look; light is an opt-in theme.
+    const next = isLight ? "dark" : "light";
+    document.documentElement.dataset.theme = next;
+    setIsLight(next === "light");
+    syncThemeColor(next);
+    try {
+      localStorage.setItem("theme", next);
+    } catch {
+      // Storage can be unavailable (private mode); the choice still applies for this visit.
+    }
+  };
 
   useEffect(() => {
     const onScroll = () => {
@@ -76,7 +89,7 @@ export function Navbar() {
         </div>
 
         <div className="nav-actions">
-          <button className="icon-btn theme-toggle" type="button" onClick={toggleTheme} aria-label="Toggle light and dark theme">
+          <button className="icon-btn theme-toggle" type="button" onClick={toggleTheme} aria-label="Light theme" aria-pressed={isLight}>
             <Sun className="icon-sun" size={17} />
             <Moon className="icon-moon" size={17} />
           </button>

@@ -22,12 +22,23 @@ const demos = [
 ] as const;
 
 // The console replays real projects: each step is the project's pipeline and the output is its recorded impact.
-const runs: Run[] = demos.flatMap((demo) => {
-  const project = projects.find((item) => item.name === demo.name);
-  return project
-    ? [{ chip: demo.chip, command: `agent run ${demo.command}`, steps: project.pipeline, output: project.impact, tools: project.tools.slice(0, 4) }]
-    : [];
+const toRun = (project: (typeof projects)[number], chip: string, command: string): Run => ({
+  chip,
+  command: `agent run ${command}`,
+  steps: project.pipeline,
+  output: project.impact,
+  tools: project.tools.slice(0, 4)
 });
+
+const pickedRuns = demos.flatMap((demo) => {
+  const project = projects.find((item) => item.name === demo.name);
+  return project ? [toRun(project, demo.chip, demo.command)] : [];
+});
+
+// Fall back to the first projects if a demo name drifts, so the console never renders without a run.
+const runs: Run[] = pickedRuns.length
+  ? pickedRuns
+  : projects.slice(0, 3).map((project, index) => toRun(project, `Project ${index + 1}`, `project-${index + 1}`));
 
 // The replay is driven by a single tick counter so every frame is derived, not stored.
 // A 50ms tick keeps the replay smooth while re-rendering the console only 20 times a second.

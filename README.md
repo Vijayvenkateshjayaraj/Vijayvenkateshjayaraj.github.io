@@ -1,6 +1,6 @@
 # Vijayvenkatesh Jayaraj — Portfolio
 
-A recruiter-focused data analytics portfolio built with Next.js 15, TypeScript, and Tailwind CSS.
+Portfolio of Vijayvenkatesh Jayaraj, an AI Engineer, built with Next.js 15 and TypeScript and deployed as a static site on GitHub Pages.
 
 ## Run locally
 
