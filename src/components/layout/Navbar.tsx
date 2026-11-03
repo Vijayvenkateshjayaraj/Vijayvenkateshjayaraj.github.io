@@ -1,12 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { navigation, profile } from "@/data/profile";
 
 function toggleTheme() {
   const root = document.documentElement;
-  const current = root.dataset.theme ?? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-  const next = current === "dark" ? "light" : "dark";
+  // Dark is the default look; light is an opt-in theme.
+  const next = root.dataset.theme === "light" ? "dark" : "light";
   root.dataset.theme = next;
   try {
     localStorage.setItem("theme", next);
@@ -19,10 +19,14 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeHref, setActiveHref] = useState("");
+  const progressRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 8);
+      // Written straight to the element so scrolling never re-renders the nav.
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      if (progressRef.current) progressRef.current.style.transform = `scaleX(${scrollable > 0 ? window.scrollY / scrollable : 0})`;
       // Back at the hero, no section link should stay highlighted.
       if (window.scrollY < window.innerHeight * 0.4) setActiveHref("");
     };
@@ -88,6 +92,7 @@ export function Navbar() {
             {open ? <X size={18} /> : <Menu size={18} />}
           </button>
         </div>
+        <span className="nav-progress" ref={progressRef} aria-hidden="true" />
       </nav>
     </header>
   );

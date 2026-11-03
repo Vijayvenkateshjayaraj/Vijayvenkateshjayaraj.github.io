@@ -1,22 +1,22 @@
 import { profile } from "@/data/profile";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
-const principles = [
+const practices = [
   {
-    title: "Ground",
-    text: "Agents work on real business data in SharePoint, SQL Server, PostgreSQL, and Microsoft Graph, not toy prompts."
+    title: "Benchmark against ground truth",
+    text: "A self-built 50-case benchmark took label change detection from 68% to 88% accuracy."
   },
   {
-    title: "Tool",
-    text: "Each capability is a scoped tool call, such as lookup, compare, or summarize, so model behavior stays predictable."
+    title: "Flag uncertain outputs",
+    text: "Confidence thresholds send unclear reads to human-in-the-loop review instead of guessing."
   },
   {
-    title: "Guard",
-    text: "Entra ID auth, access control, and validation checks run before anything reaches a stakeholder."
+    title: "Govern prompts and data",
+    text: "Prompts and responses audited in Microsoft Purview, with Entra ID access control."
   },
   {
-    title: "Observe",
-    text: "Application Insights telemetry, retries, and readable errors make every run traceable."
+    title: "Monitor every run",
+    text: "Per-turn telemetry in Azure Application Insights, queried with KQL."
   }
 ] as const;
 
@@ -25,20 +25,20 @@ export function About() {
     <section id="about" className="section">
       <div className="wrap about">
         <div className="about-copy">
-          <SectionHeading index="01" label="About" title="An AI developer who starts from the business problem" />
+          <SectionHeading index="01" label="About" title="About me" />
           <p>{profile.about}</p>
           <p>{profile.aboutMore}</p>
         </div>
 
-        <div className="principles">
-          <p className="principles-label">How I ship agents</p>
+        <div className="practices glass hud spot">
+          <p className="practices-label">How I build agents</p>
           <ol>
-            {principles.map((principle, index) => (
-              <li key={principle.title}>
-                <span className="principle-index">{String(index + 1).padStart(2, "0")}</span>
+            {practices.map((practice, index) => (
+              <li key={practice.title}>
+                <span className="practice-index">{String(index + 1).padStart(2, "0")}</span>
                 <div>
-                  <h3>{principle.title}</h3>
-                  <p>{principle.text}</p>
+                  <h3>{practice.title}</h3>
+                  <p>{practice.text}</p>
                 </div>
               </li>
             ))}

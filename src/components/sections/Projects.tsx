@@ -54,10 +54,10 @@ export function Projects() {
           <SectionHeading
             index="02"
             label="Projects"
-            title="Agents and systems I’ve built"
-            intro="Each build covers the problem, the pipeline, the stack, and the business result. Open one for the full case study."
+            title="Projects"
+            intro="Select a project to see what I built and the tools I used."
           />
-          <div className="filters" role="group" aria-label="Filter projects">
+          <div className="filters glass" role="group" aria-label="Filter projects">
             {filters.map((item) => {
               const count = item.id === "all" ? projects.length : projects.filter((project) => project.kind === item.id).length;
               return (
@@ -78,7 +78,7 @@ export function Projects() {
 
         <ul className="project-grid">
           {visibleProjects.map((project) => (
-            <li key={project.name} className={`project-card kind-${project.kind}`}>
+            <li key={project.name} className={`project-card glass spot kind-${project.kind}`}>
               <p className="project-meta">
                 <span>{kindLabels[project.kind]}</span>
                 <span>{project.dates}</span>
@@ -91,7 +91,7 @@ export function Projects() {
                 {project.tools.length > MAX_CARD_TOOLS && <li className="chip-more">+{project.tools.length - MAX_CARD_TOOLS}</li>}
               </ul>
               <button type="button" className="project-open" onClick={() => openProject(project)}>
-                Case study <ArrowUpRight size={15} />
+                Details <ArrowUpRight size={15} />
                 <span className="sr-only">: {project.name}</span>
               </button>
             </li>
@@ -115,7 +115,7 @@ export function Projects() {
                 <span>{selected.category}</span>
                 <span>{selected.dates}</span>
               </p>
-              <button type="button" className="icon-btn" onClick={closeProject} aria-label="Close case study">
+              <button type="button" className="icon-btn" onClick={closeProject} aria-label="Close project details">
                 <X size={18} />
               </button>
             </header>
@@ -131,11 +131,11 @@ export function Projects() {
             </ul>
 
             <div className="dialog-impact">
-              <h4>Impact</h4>
+              <h4>Result</h4>
               <p>{selected.impact}</p>
             </div>
 
-            <h4>Stack</h4>
+            <h4>Tools</h4>
             <ul className="chips">
               {selected.tools.map((tool) => <li key={tool}>{tool}</li>)}
             </ul>

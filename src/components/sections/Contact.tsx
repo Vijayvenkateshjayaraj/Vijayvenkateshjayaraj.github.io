@@ -26,11 +26,11 @@ export function Contact() {
   return (
     <section id="contact" className="section">
       <div className="wrap">
-        <div className="contact-card">
-          <p className="kicker"><span>06</span>Contact</p>
-          <h2>Have a workflow an agent should be running?</h2>
+        <div className="contact-card glass hud">
+          <p className="kicker"><span>[06]</span>Contact</p>
+          <h2>Get in <em>touch.</em></h2>
           <p className="contact-lede">
-            {profile.availability} I’m also happy to talk through an AI idea and whether it’s worth building.
+            {profile.availability} Email is the fastest way to reach me.
           </p>
           <div className="contact-actions">
             <ButtonLink href={`mailto:${profile.email}`}>

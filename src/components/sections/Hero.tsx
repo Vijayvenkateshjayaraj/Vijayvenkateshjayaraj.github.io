@@ -5,63 +5,51 @@ import Image from "next/image";
 import { ArrowRight, Check, Download, LoaderCircle, MapPin } from "lucide-react";
 import { profile } from "@/data/profile";
 import { projects } from "@/data/projects";
-import { experience } from "@/data/experience";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 
-type SessionScript = {
+type Run = {
   chip: string;
-  prompt: string;
-  tools: { call: string; result: string }[];
-  answer: string;
+  command: string;
+  steps: readonly string[];
+  output: string;
+  tools: readonly string[];
 };
 
-const agentCount = projects.filter((project) => project.kind === "agent").length;
+const demos = [
+  { name: "Product Label Comparison & Review Agent", command: "label-review", chip: "Label review" },
+  { name: "Insurance Intake Agent", command: "insurance-intake", chip: "Insurance intake" },
+  { name: "Local LLM Inference Bridge", command: "local-llm-bridge", chip: "Local LLM" }
+] as const;
 
-const scripts: SessionScript[] = [
-  {
-    chip: "What do you build?",
-    prompt: "What does Vijay build?",
-    tools: [
-      { call: "search_projects(kind=\"agent\")", result: `${agentCount} agents` },
-      { call: "get_stack(focus=\"ai\")", result: "Claude · Azure · Graph" }
-    ],
-    answer:
-      "AI agents for enterprise work: tool-calling Claude assistants over Microsoft Graph, OCR + computer-vision review pipelines, and regulatory monitors with SQL version tracking."
-  },
-  {
-    chip: "How do you ship?",
-    prompt: "How does he take agents to production?",
-    tools: [{ call: "get_practices()", result: "auth · telemetry · retries" }],
-    answer:
-      "Scoped tools, Entra ID authentication and access control, retry and error handling, and Application Insights telemetry, so every run is secure and traceable."
-  },
-  {
-    chip: "Open to roles?",
-    prompt: "Is he open to new roles?",
-    tools: [{ call: "get_availability()", result: "status: open" }],
-    answer: `Yes. ${profile.availability} Based in Princeton, NJ. Reach him at ${profile.email}.`
-  }
-];
+// The console replays real projects: each step is the project's pipeline and the output is its recorded impact.
+const runs: Run[] = demos.flatMap((demo) => {
+  const project = projects.find((item) => item.name === demo.name);
+  return project
+    ? [{ chip: demo.chip, command: `agent run ${demo.command}`, steps: project.pipeline, output: project.impact, tools: project.tools.slice(0, 4) }]
+    : [];
+});
 
-// The session replay is driven by a single tick counter so every frame is derived, not stored.
-const TICK_MS = 28;
-const PAUSE_TICKS = 14;
-const TOOL_TICKS = 26;
-const HOLD_TICKS = 200;
-const ANSWER_CHARS_PER_TICK = 2;
+// The replay is driven by a single tick counter so every frame is derived, not stored.
+// A 50ms tick keeps the replay smooth while re-rendering the console only 20 times a second.
+const TICK_MS = 50;
+const PAUSE_TICKS = 7;
+const STEP_TICKS = 11;
+const HOLD_TICKS = 120;
+const OUTPUT_CHARS_PER_TICK = 3;
 
-function timeline(script: SessionScript) {
-  const toolsStart = script.prompt.length + PAUSE_TICKS;
-  const answerStart = toolsStart + script.tools.length * TOOL_TICKS + 6;
-  const answerEnd = answerStart + Math.ceil(script.answer.length / ANSWER_CHARS_PER_TICK);
-  return { toolsStart, answerStart, answerEnd, end: answerEnd + HOLD_TICKS };
+function timeline(run: Run) {
+  const stepsStart = run.command.length + PAUSE_TICKS;
+  const outputStart = stepsStart + run.steps.length * STEP_TICKS + 4;
+  const outputEnd = outputStart + Math.ceil(run.output.length / OUTPUT_CHARS_PER_TICK);
+  return { stepsStart, outputStart, outputEnd, end: outputEnd + HOLD_TICKS };
 }
 
+// Headline results taken from the résumé.
 const stats = [
-  { value: String(projects.length).padStart(2, "0"), label: "Shipped builds" },
-  { value: String(agentCount).padStart(2, "0"), label: "AI agents" },
-  { value: String(experience.length).padStart(2, "0"), label: "Enterprise roles" },
-  { value: "2022", label: "Shipping in enterprise since" }
+  { value: "4.5", label: "Years experience" },
+  { value: "88%", label: "Label-diff accuracy" },
+  { value: "1,250", label: "Risky links removed" },
+  { value: "50+", label: "Chatbots deployed" }
 ];
 
 export function Hero() {
@@ -69,7 +57,7 @@ export function Hero() {
   const [isVisible, setIsVisible] = useState(true);
   const [reducedMotion, setReducedMotion] = useState(false);
   const autoPlay = useRef(true);
-  const cardRef = useRef<HTMLDivElement>(null);
+  const consoleRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const query = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -80,10 +68,10 @@ export function Hero() {
   }, []);
 
   useEffect(() => {
-    const card = cardRef.current;
-    if (!card) return;
+    const element = consoleRef.current;
+    if (!element) return;
     const observer = new IntersectionObserver(([entry]) => setIsVisible(entry.isIntersecting));
-    observer.observe(card);
+    observer.observe(element);
     return () => observer.disconnect();
   }, []);
 
@@ -91,40 +79,41 @@ export function Hero() {
     if (reducedMotion || !isVisible) return;
     const interval = window.setInterval(() => {
       setSession((current) => {
-        if (current.tick < timeline(scripts[current.active]).end) return { ...current, tick: current.tick + 1 };
-        if (autoPlay.current) return { active: (current.active + 1) % scripts.length, tick: 0 };
+        if (current.tick < timeline(runs[current.active]).end) return { ...current, tick: current.tick + 1 };
+        if (autoPlay.current) return { active: (current.active + 1) % runs.length, tick: 0 };
         return current;
       });
     }, TICK_MS);
     return () => window.clearInterval(interval);
   }, [reducedMotion, isVisible]);
 
-  const script = scripts[session.active];
-  const t = timeline(script);
-  // With reduced motion the session is shown fully resolved instead of replayed.
-  const tick = reducedMotion ? t.answerEnd : session.tick;
-  const prompt = script.prompt.slice(0, tick);
-  const isTypingPrompt = tick < script.prompt.length;
-  const isThinking = tick >= script.prompt.length && tick < t.toolsStart;
-  const answer = script.answer.slice(0, Math.max(0, (tick - t.answerStart) * ANSWER_CHARS_PER_TICK));
-  const isStreaming = tick >= t.answerStart && tick < t.answerEnd;
+  const run = runs[session.active];
+  const t = timeline(run);
+  // With reduced motion the run is shown fully resolved instead of replayed.
+  const tick = reducedMotion ? t.outputEnd : session.tick;
+  const command = run.command.slice(0, tick);
+  const isTyping = tick < run.command.length;
+  const output = run.output.slice(0, Math.max(0, (tick - t.outputStart) * OUTPUT_CHARS_PER_TICK));
+  const isStreaming = tick >= t.outputStart && tick < t.outputEnd;
+  const isComplete = tick >= t.outputEnd;
+  const progress = Math.min(1, tick / t.outputEnd);
 
-  const ask = (index: number) => {
+  const replay = (index: number) => {
     autoPlay.current = false;
     setSession({ active: index, tick: 0 });
   };
 
   return (
     <section id="top" className="hero">
-      <div className="hero-backdrop" aria-hidden="true" />
+      <div className="hero-floor" aria-hidden="true" />
       <div className="wrap hero-layout">
         <div className="hero-copy">
           <div className="hero-id">
             <Image
               className="hero-avatar"
               src="/vijay-jayaraj-profile.jpg"
-              width={44}
-              height={44}
+              width={46}
+              height={46}
               alt={`Photo of ${profile.name}`}
               priority
               unoptimized
@@ -132,20 +121,20 @@ export function Hero() {
             <div>
               <h1 className="hero-name">{profile.name}</h1>
               <p className="hero-meta">
-                <span className="status-dot" aria-hidden="true" /> Available
+                <span className="status-dot" aria-hidden="true" /> Open to work
                 <span aria-hidden="true">·</span>
                 <MapPin size={13} aria-hidden="true" /> Princeton, NJ
               </p>
             </div>
           </div>
-          <p className="kicker"><span>~/</span>{profile.role}</p>
+          <p className="kicker"><span>&gt;_</span>{profile.title}</p>
           <p className="hero-headline">
-            I build AI agents that do <em>real work.</em>
+            I build AI agents for <em>business workflows.</em>
           </p>
           <p className="hero-lede">{profile.summary}</p>
           <div className="hero-actions">
             <ButtonLink href="#projects">
-              See the agents <ArrowRight size={17} />
+              View projects <ArrowRight size={17} />
             </ButtonLink>
             <ButtonLink href={profile.resume} variant="secondary" download>
               <Download size={16} /> Résumé
@@ -153,61 +142,65 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="session" ref={cardRef}>
-          <div className="session-bar">
-            <span className="session-dots" aria-hidden="true"><i /><i /><i /></span>
-            <span className="session-title">agent.session</span>
-            <span className="session-tag">replay</span>
+        <div className="console" ref={consoleRef}>
+          <div className="console-bar">
+            <span className="console-dots" aria-hidden="true"><i /><i /><i /></span>
+            <span className="console-title">agent-runtime</span>
+            <span className={`console-status${isComplete ? " is-complete" : ""}`}>
+              <i aria-hidden="true" />{isComplete ? "complete" : "running"}
+            </span>
+          </div>
+          <div className="console-progress" aria-hidden="true">
+            <i style={{ transform: `scaleX(${progress})` }} />
           </div>
 
-          <p className="sr-only">{`Example question: ${script.prompt} Answer: ${script.answer}`}</p>
+          <p className="sr-only">{`Demo run of the ${run.chip}: ${run.steps.join(", ")}. Result: ${run.output}`}</p>
 
-          <div className="session-body" aria-hidden="true">
-            <div className="turn turn-user">
-              <span className="turn-role">you</span>
-              <p>
-                {prompt}
-                {isTypingPrompt && <span className="caret" />}
-              </p>
-            </div>
+          <div className="console-screen" aria-hidden="true">
+            <span className="console-scan" />
+            <p className="console-cmd">
+              <span className="console-prompt">❯</span>
+              <code>{command}</code>
+              {isTyping && <span className="caret" />}
+            </p>
 
-            {isThinking && <p className="session-thinking">planning<span>…</span></p>}
-
-            {script.tools.map((tool, index) => {
-              const start = t.toolsStart + index * TOOL_TICKS;
+            {run.steps.map((step, index) => {
+              const start = t.stepsStart + index * STEP_TICKS;
               if (tick < start) return null;
-              const done = tick >= start + TOOL_TICKS - 6;
+              const done = tick >= start + STEP_TICKS - 4;
               return (
-                <div className={`tool${done ? " is-done" : ""}`} key={tool.call}>
-                  <span className="tool-state">
-                    {done ? <Check size={12} strokeWidth={3} /> : <LoaderCircle size={12} className="spin" />}
+                <div className={`step${done ? " is-done" : ""}`} key={step}>
+                  <span className="step-state">
+                    {done ? <Check size={11} strokeWidth={3} /> : <LoaderCircle size={11} className="spin" />}
                   </span>
-                  <code>{tool.call}</code>
-                  <span className="tool-result">{done ? tool.result : "running"}</span>
+                  <span className="step-index">{String(index + 1).padStart(2, "0")}</span>
+                  <span className="step-name">{step}</span>
+                  <span className="step-status">{done ? "ok" : "running"}</span>
                 </div>
               );
             })}
 
-            {tick >= t.answerStart && (
-              <div className="turn turn-agent">
-                <span className="turn-role">agent</span>
+            {tick >= t.outputStart && (
+              <div className="console-output">
+                <span>result</span>
                 <p>
-                  {answer}
+                  {output}
                   {isStreaming && <span className="caret" />}
                 </p>
+                {isComplete && <p className="console-tools">{run.tools.join(" · ")}</p>}
               </div>
             )}
           </div>
 
-          <div className="session-foot">
-            <span>Ask</span>
-            {scripts.map((item, index) => (
+          <div className="console-foot">
+            <span>Run</span>
+            {runs.map((item, index) => (
               <button
                 key={item.chip}
                 type="button"
                 className={index === session.active ? "is-active" : undefined}
                 aria-pressed={index === session.active}
-                onClick={() => ask(index)}
+                onClick={() => replay(index)}
               >
                 {item.chip}
               </button>
@@ -217,7 +210,7 @@ export function Hero() {
       </div>
 
       <div className="wrap">
-        <dl className="hero-stats">
+        <dl className="hero-stats glass">
           {stats.map((stat) => (
             <div key={stat.label}>
               <dt>{stat.label}</dt>

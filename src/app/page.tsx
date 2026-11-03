@@ -7,6 +7,7 @@ import { Skills } from "@/components/sections/Skills";
 import { Projects } from "@/components/sections/Projects";
 import { Credentials } from "@/components/sections/Credentials";
 import { Contact } from "@/components/sections/Contact";
+import { PointerSpotlight } from "@/components/ui/PointerSpotlight";
 import { profile } from "@/data/profile";
 import { experience } from "@/data/experience";
 import { education } from "@/data/education";
@@ -57,7 +58,10 @@ export default function Home() {
         "Microsoft Graph",
         "Azure",
         "Enterprise automation",
-        "Data engineering"
+        "Data engineering",
+        "Local LLMs",
+        "Document AI",
+        "AI evaluation"
       ]
     }
   };
@@ -69,6 +73,8 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(profilePageJsonLd) }}
       />
       <a className="skip-link" href="#main">Skip to content</a>
+      <div className="bg-fx" aria-hidden="true"><i /><i /><i /></div>
+      <PointerSpotlight />
       <Navbar />
       <main id="main">
         <Hero />

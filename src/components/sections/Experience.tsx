@@ -5,13 +5,13 @@ export function Experience() {
   return (
     <section id="experience" className="section">
       <div className="wrap">
-        <SectionHeading index="03" label="Experience" title="From data pipelines to AI agents" />
+        <SectionHeading index="03" label="Experience" title="Work experience" />
         <ol className="timeline">
           {experience.map((job) => (
             <li key={`${job.company}-${job.dates}`} className="role">
               <div className="role-meta">
                 <span className="role-dates">{job.dates}</span>
-                <span>{job.location}</span>
+                {job.location && <span>{job.location}</span>}
               </div>
               <div className="role-body">
                 <h3>{job.title}</h3>

@@ -1,17 +1,22 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import { profile } from "@/data/profile";
 import "./globals.css";
 
 const siteUrl = "https://vijayvenkateshjayaraj.github.io";
 const socialImage = "/og.png";
 
-const sans = Geist({
+const display = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-display"
+});
+
+const sans = Inter({
   subsets: ["latin"],
   variable: "--font-sans"
 });
 
-const mono = Geist_Mono({
+const mono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono"
 });
@@ -20,9 +25,9 @@ const mono = Geist_Mono({
 const themeScript = `(function(){try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t;}catch(e){}})();`;
 
 // Leading with the full name keeps every search snippet tied to one consistent identity.
-const title = `${profile.name} | AI Developer`;
+const title = `${profile.name} | AI Engineer`;
 const description =
-  `${profile.name} (Vijay Jayaraj) is an AI developer in Princeton, NJ building tool-calling agents, document-intelligence pipelines, and governed AI platforms on Claude, Azure, and Microsoft Graph.`;
+  `${profile.name} (Vijay Jayaraj) is an AI Engineer in Princeton, NJ who builds AI agents and document pipelines with evaluation, guardrails, and human review.`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -64,7 +69,7 @@ export const metadata: Metadata = {
         url: socialImage,
         width: 1200,
         height: 630,
-        alt: `${profile.name} - AI Developer`
+        alt: `${profile.name} - AI Engineer`
       }
     ]
   },
@@ -86,10 +91,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fafafa" },
-    { media: "(prefers-color-scheme: dark)", color: "#07070b" }
-  ]
+  themeColor: "#05060a"
 };
 
 export default function RootLayout({
@@ -102,7 +104,7 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className={`${sans.variable} ${mono.variable}`}>{children}</body>
+      <body className={`${display.variable} ${sans.variable} ${mono.variable}`}>{children}</body>
     </html>
   );
 }

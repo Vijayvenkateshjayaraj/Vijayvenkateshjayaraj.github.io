@@ -2,20 +2,18 @@ export const profile = {
   name: "Vijayvenkatesh Jayaraj",
   shortName: "Vijay Jayaraj",
 
-  title: "AI Developer",
+  title: "AI Engineer",
 
-  role: "AI Developer · Agents & Enterprise Automation",
-
-  headline: "I build AI agents that do real work.",
+  role: "AI Engineer · Princeton, NJ",
 
   summary:
-    "I design and ship tool-calling agents, document-intelligence pipelines, and governed AI platforms on Claude, Azure, and Microsoft Graph, so enterprise teams spend less time on manual work and more time on decisions.",
+    "I’m an AI Engineer with 4.5 years in software and data engineering. I integrate pretrained models into AI agents and document pipelines deployed for clients, and make them reliable with evaluation, guardrails, and human review.",
 
   about:
-    "I’m Vijay, an AI developer with a background in computer science and business analytics. I build AI agents and automation for enterprise teams: artwork and document review with OCR and computer vision, conversational assistants over Microsoft 365 data, regulatory monitoring, and the governance platforms that keep AI accountable.",
+    "I started in conversational AI at Kenyt.ai, where I designed and deployed 50+ Rasa chatbots during a 15-month internship. At Tata Consultancy Services I built ETL pipelines and demand-forecasting models, and today at Princeton IT Services I build AI agents and document pipelines that run for clients in production.",
 
   aboutMore:
-    "Before AI, I built ETL and reporting pipelines with SQL, Databricks, and Azure Data Factory. That data-engineering background is why my agents start from clean, validated data and end in outputs a business team can trust.",
+    "I hold a master’s in business analytics from Clark University and a bachelor’s in computer science from Anna University. Most of my work is about making AI reliable: benchmarks against ground truth, confidence thresholds, human-in-the-loop review, and telemetry on every run.",
 
   email: "vijayvenkateshj012@gmail.com",
   location: "Princeton, New Jersey, USA",
@@ -30,13 +28,13 @@ export const profile = {
   },
 
   availability:
-    "Open to AI Developer, AI Engineer, and applied AI agent roles."
+    "I’m looking for AI Engineer roles."
 } as const;
 
 export const navigation = [
   ["About", "#about"],
   ["Projects", "#projects"],
   ["Experience", "#experience"],
-  ["Stack", "#stack"],
+  ["Skills", "#stack"],
   ["Contact", "#contact"]
 ] as const;

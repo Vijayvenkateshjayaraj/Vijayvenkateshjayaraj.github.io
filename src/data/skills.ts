@@ -1,91 +1,49 @@
 export const skillGroups = [
   {
-    title: "AI Agents & LLMs",
+    title: "AI & LLM Integration",
+    items: ["Claude", "Claude Code", "Copilot Studio", "Qwen3", "Ollama", "llama.cpp (CUDA)", "Foundry Local", "Rasa", "Dialogflow"]
+  },
+  {
+    title: "Document AI & Vision",
+    items: ["OCR (RapidOCR)", "ONNX Runtime", "OpenCV", "PyMuPDF", "pdfplumber"]
+  },
+  {
+    title: "Evaluation & Governance",
     items: [
-      "Claude API",
-      "Tool Calling",
-      "AI Agent Workflows",
-      "Anthropic Custom Agents",
-      "OpenAI Custom Agents",
-      "Copilot Studio",
-      "Prompt Engineering",
-      "Document Processing",
-      "Microsoft Graph API",
-      "REST API Integration"
+      "Ground-truth benchmarking",
+      "Confidence thresholds",
+      "Human-in-the-loop review",
+      "Regression testing",
+      "UAT",
+      "Azure Application Insights",
+      "KQL",
+      "Microsoft Purview"
     ]
   },
   {
-    title: "Azure & Cloud",
-    items: [
-      "Azure Functions",
-      "Azure OpenAI Service",
-      "Azure AI Foundry",
-      "Document Intelligence",
-      "Application Insights",
-      "Data Factory",
-      "Key Vault",
-      "App Service",
-      "Blob Storage",
-      "Managed Identity"
-    ]
+    title: "ML Model Training",
+    items: ["scikit-learn", "Logistic regression", "Random forest", "XGBoost", "Feature engineering", "Cross-validation", "ROC-AUC"]
   },
   {
-    title: "Programming & ML",
+    title: "Engineering & Cloud",
     items: [
       "Python",
-      "Streamlit",
-      "Pandas",
-      "NumPy",
-      "scikit-learn",
-      "OpenCV",
-      "OCR",
-      "Matplotlib",
-      "Java",
-      "C++",
-      "R"
-    ]
-  },
-  {
-    title: "Data & BI",
-    items: [
+      "pandas",
+      "TypeScript",
+      "JavaScript",
+      "FastAPI",
+      "REST APIs",
+      "Webhooks",
+      "Postman",
+      "Azure Functions",
+      "Azure Data Factory",
+      "Microsoft Graph API",
       "PostgreSQL",
-      "SQL Server",
-      "MySQL",
-      "Oracle SQL",
-      "Window Functions",
-      "Query Optimization",
+      "SQL",
+      "Spark (Scala)",
       "Databricks",
-      "Snowflake",
       "Power BI",
-      "Tableau",
-      "Google Analytics"
-    ]
-  },
-  {
-    title: "Automation & Delivery",
-    items: [
-      "Power Automate",
-      "SharePoint",
-      "Docker",
-      "GitHub Actions",
-      "Jira",
-      "Visual Studio",
-      "Jupyter Notebook",
-      "PgAdmin",
-      "Microsoft Excel"
-    ]
-  },
-  {
-    title: "Business Analysis",
-    items: [
-      "Process Mapping",
-      "Requirement Gathering",
-      "Root Cause Analysis",
-      "Functional Documentation",
-      "KPI Dashboards",
-      "Trend Analysis",
-      "Forecasting",
-      "Client Collaboration"
+      "GitHub Actions"
     ]
   }
 ] as const;
