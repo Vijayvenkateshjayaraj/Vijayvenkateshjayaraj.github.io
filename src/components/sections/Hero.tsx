@@ -1,187 +1,230 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import {
-  ArrowRight,
-  ArrowUpRight,
-  BrainCircuit,
-  Download,
-  MapPin,
-  Orbit,
-} from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { ArrowRight, Check, Download, LoaderCircle, MapPin } from "lucide-react";
 import { profile } from "@/data/profile";
+import { projects } from "@/data/projects";
+import { experience } from "@/data/experience";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 
-const matrixGlyphs = "01<>[]{}#/\\";
-const matrixSummary = profile.summary.replace(/\.$/, "");
-const orchestrationNodes = [
-  { label: "OCR", tooltip: "Extracts text from documents and images", x: 50, y: 9 },
-  { label: "Computer Vision", tooltip: "Understands visual content and layout", x: 79, y: 21 },
-  { label: "Embeddings", tooltip: "Transforms meaning into searchable vectors", x: 91, y: 50 },
-  { label: "RAG", tooltip: "Grounds responses in enterprise knowledge", x: 79, y: 79 },
-  { label: "LLM Inference", tooltip: "Generates context-aware intelligence", x: 50, y: 91 },
-  { label: "AI Agents", tooltip: "Plans and executes multi-step workflows", x: 21, y: 79 },
-  { label: "Validation", tooltip: "Checks quality, accuracy, and policy", x: 9, y: 50 },
-  { label: "API Integration", tooltip: "Connects models to business systems", x: 21, y: 21 },
-] as const;
+type SessionScript = {
+  chip: string;
+  prompt: string;
+  tools: { call: string; result: string }[];
+  answer: string;
+};
+
+const agentCount = projects.filter((project) => project.kind === "agent").length;
+
+const scripts: SessionScript[] = [
+  {
+    chip: "What do you build?",
+    prompt: "What does Vijay build?",
+    tools: [
+      { call: "search_projects(kind=\"agent\")", result: `${agentCount} agents` },
+      { call: "get_stack(focus=\"ai\")", result: "Claude · Azure · Graph" }
+    ],
+    answer:
+      "AI agents for enterprise work: tool-calling Claude assistants over Microsoft Graph, OCR + computer-vision review pipelines, and regulatory monitors with SQL version tracking."
+  },
+  {
+    chip: "How do you ship?",
+    prompt: "How does he take agents to production?",
+    tools: [{ call: "get_practices()", result: "auth · telemetry · retries" }],
+    answer:
+      "Scoped tools, Entra ID authentication and access control, retry and error handling, and Application Insights telemetry, so every run is secure and traceable."
+  },
+  {
+    chip: "Open to roles?",
+    prompt: "Is he open to new roles?",
+    tools: [{ call: "get_availability()", result: "status: open" }],
+    answer: `Yes. ${profile.availability} Based in Princeton, NJ. Reach him at ${profile.email}.`
+  }
+];
+
+// The session replay is driven by a single tick counter so every frame is derived, not stored.
+const TICK_MS = 28;
+const PAUSE_TICKS = 14;
+const TOOL_TICKS = 26;
+const HOLD_TICKS = 200;
+const ANSWER_CHARS_PER_TICK = 2;
+
+function timeline(script: SessionScript) {
+  const toolsStart = script.prompt.length + PAUSE_TICKS;
+  const answerStart = toolsStart + script.tools.length * TOOL_TICKS + 6;
+  const answerEnd = answerStart + Math.ceil(script.answer.length / ANSWER_CHARS_PER_TICK);
+  return { toolsStart, answerStart, answerEnd, end: answerEnd + HOLD_TICKS };
+}
+
+const stats = [
+  { value: String(projects.length).padStart(2, "0"), label: "Shipped builds" },
+  { value: String(agentCount).padStart(2, "0"), label: "AI agents" },
+  { value: String(experience.length).padStart(2, "0"), label: "Enterprise roles" },
+  { value: "2022", label: "Shipping in enterprise since" }
+];
 
 export function Hero() {
-  const [animationRun, setAnimationRun] = useState(0);
-  const [revealedCharacters, setRevealedCharacters] = useState(0);
-  const [matrixGlyph, setMatrixGlyph] = useState("0");
+  const [session, setSession] = useState({ active: 0, tick: 0 });
+  const [isVisible, setIsVisible] = useState(true);
+  const [reducedMotion, setReducedMotion] = useState(false);
+  const autoPlay = useRef(true);
+  const cardRef = useRef<HTMLDivElement>(null);
 
-  const replaySummary = useCallback(() => {
-    setAnimationRun((run) => run + 1);
+  useEffect(() => {
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReducedMotion(query.matches);
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
   }, []);
 
   useEffect(() => {
-    window.addEventListener("hero-replay", replaySummary);
-    return () => window.removeEventListener("hero-replay", replaySummary);
-  }, [replaySummary]);
+    const card = cardRef.current;
+    if (!card) return;
+    const observer = new IntersectionObserver(([entry]) => setIsVisible(entry.isIntersecting));
+    observer.observe(card);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
-    const hero = document.getElementById("home");
-    if (!hero) return;
-
-    let hasLeftHome = false;
-    const handleScroll = () => {
-      const bounds = hero.getBoundingClientRect();
-      const hasLeftViewport = bounds.bottom <= 0 || bounds.top >= window.innerHeight;
-      const hasReturnedHome = bounds.top < window.innerHeight * 0.65 && bounds.bottom > window.innerHeight * 0.25;
-
-      if (hasLeftViewport) hasLeftHome = true;
-      if (hasLeftHome && hasReturnedHome) {
-        replaySummary();
-        hasLeftHome = false;
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [replaySummary]);
-
-  useEffect(() => {
-    setRevealedCharacters(0);
-
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setRevealedCharacters(matrixSummary.length);
-      return;
-    }
-
-    let character = 0;
+    if (reducedMotion || !isVisible) return;
     const interval = window.setInterval(() => {
-      // Reveal a small group at a time so the typewriter effect does not
-      // schedule a React render for every individual character.
-      character = Math.min(character + 3, matrixSummary.length);
-      setRevealedCharacters(character);
-      setMatrixGlyph(matrixGlyphs[character % matrixGlyphs.length]);
-
-      if (character >= matrixSummary.length) {
-        window.clearInterval(interval);
-      }
-    }, 42);
-
+      setSession((current) => {
+        if (current.tick < timeline(scripts[current.active]).end) return { ...current, tick: current.tick + 1 };
+        if (autoPlay.current) return { active: (current.active + 1) % scripts.length, tick: 0 };
+        return current;
+      });
+    }, TICK_MS);
     return () => window.clearInterval(interval);
-  }, [animationRun]);
+  }, [reducedMotion, isVisible]);
 
-  const isComplete = revealedCharacters >= matrixSummary.length;
+  const script = scripts[session.active];
+  const t = timeline(script);
+  // With reduced motion the session is shown fully resolved instead of replayed.
+  const tick = reducedMotion ? t.answerEnd : session.tick;
+  const prompt = script.prompt.slice(0, tick);
+  const isTypingPrompt = tick < script.prompt.length;
+  const isThinking = tick >= script.prompt.length && tick < t.toolsStart;
+  const answer = script.answer.slice(0, Math.max(0, (tick - t.answerStart) * ANSWER_CHARS_PER_TICK));
+  const isStreaming = tick >= t.answerStart && tick < t.answerEnd;
+
+  const ask = (index: number) => {
+    autoPlay.current = false;
+    setSession({ active: index, tick: 0 });
+  };
 
   return (
-    <section id="home" className="hero">
-      <div className="container hero-grid">
-        <div className="hero-content">
-          <div className="hero-intro">
+    <section id="top" className="hero">
+      <div className="hero-backdrop" aria-hidden="true" />
+      <div className="wrap hero-layout">
+        <div className="hero-copy">
+          <div className="hero-id">
             <Image
-              className="hero-profile-photo"
+              className="hero-avatar"
               src="/vijay-jayaraj-profile.jpg"
-              width={104}
-              height={104}
-              alt="Vijayvenkatesh Jayaraj"
+              width={44}
+              height={44}
+              alt={`Photo of ${profile.name}`}
               priority
               unoptimized
             />
             <div>
-              <div className="hero-kicker">
-                <span className="availability"><i /> Available for new opportunities</span>
-                <span className="hero-coordinates"><MapPin /> Princeton, New Jersey</span>
-              </div>
-              <p className="eyebrow">{profile.name}</p>
+              <h1 className="hero-name">{profile.name}</h1>
+              <p className="hero-meta">
+                <span className="status-dot" aria-hidden="true" /> Available
+                <span aria-hidden="true">·</span>
+                <MapPin size={13} aria-hidden="true" /> Princeton, NJ
+              </p>
             </div>
           </div>
-          <h1>
-            AI systems that turn complexity into <span>clear decisions.</span>
-          </h1>
-          <h2>{profile.title}</h2>
-          <p className="hero-copy matrix-copy" aria-label={matrixSummary}>
-            <span className="matrix-copy-measure" aria-hidden="true">{matrixSummary}</span>
-            <span className="matrix-copy-output" aria-hidden="true">
-              {matrixSummary.slice(0, revealedCharacters)}
-              {!isComplete && <span className="matrix-cursor">{matrixGlyph}</span>}
-              {isComplete && <span className="matrix-cursor matrix-cursor-idle">_</span>}
-            </span>
+          <p className="kicker"><span>~/</span>{profile.role}</p>
+          <p className="hero-headline">
+            I build AI agents that do <em>real work.</em>
           </p>
+          <p className="hero-lede">{profile.summary}</p>
           <div className="hero-actions">
             <ButtonLink href="#projects">
-              Explore the systems <ArrowRight size={18} />
+              See the agents <ArrowRight size={17} />
             </ButtonLink>
-            <ButtonLink href="#contact" variant="secondary">
-              Start a conversation <ArrowUpRight size={17} />
+            <ButtonLink href={profile.resume} variant="secondary" download>
+              <Download size={16} /> Résumé
             </ButtonLink>
-          </div>
-          <div className="hero-proof-grid" aria-label="Portfolio highlights">
-            <span><strong>09</strong><small>End-to-end projects</small></span>
-            <span><strong>02</strong><small>Enterprise roles</small></span>
-            <span><strong>03</strong><small>Core lanes: AI, data, governance</small></span>
-          </div>
-          <div className="hero-meta-row">
-            <a className="resume-link" href={profile.resume} download><Download size={16} /> Download résumé</a>
-            <span>From business question to production workflow</span>
           </div>
         </div>
 
-        <aside className="signal-console orchestration-console" aria-label="AI orchestration engine visualization">
-          <div className="console-glow console-glow-a" />
-          <div className="console-glow console-glow-b" />
-          <header className="console-header">
-            <span><Orbit /> Decision system canvas</span>
-            <strong><i /> Live architecture</strong>
-          </header>
-          <div className="orchestration-visual">
-            <div className="orbit-ring orbit-ring-a" />
-            <div className="orbit-ring orbit-ring-b" />
-            <div className="orbit-particles" aria-hidden="true">{Array.from({ length: 12 }, (_, index) => <i key={index} />)}</div>
-            <div className="orchestration-orbit">
-              <svg className="orchestration-links" viewBox="0 0 100 100" aria-hidden="true">
-                {orchestrationNodes.map((node, index) => (
-                  <g key={node.label}>
-                    <line x1="50" y1="50" x2={node.x} y2={node.y} />
-                    <circle className="signal-pulse" r="0.85">
-                      <animateMotion dur={`${5.4 + index * .35}s`} repeatCount="indefinite" path={`M 50 50 L ${node.x} ${node.y}`} begin={`${index * -.7}s`} />
-                    </circle>
-                  </g>
-                ))}
-              </svg>
-              {orchestrationNodes.map((node, index) => (
-                <div className={`orbit-node-position node-${index}`} key={node.label}>
-                  <div className="orbit-node-motion">
-                    <button type="button" className="orchestration-node" aria-label={`${node.label}: ${node.tooltip}`}>
-                      <span>{node.label}</span>
-                      <small role="tooltip">{node.tooltip}</small>
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="orchestration-core">
-              <BrainCircuit />
-              <span>Decision</span>
-              <strong>Intelligence</strong>
-              <i />
-            </div>
+        <div className="session" ref={cardRef}>
+          <div className="session-bar">
+            <span className="session-dots" aria-hidden="true"><i /><i /><i /></span>
+            <span className="session-title">agent.session</span>
+            <span className="session-tag">replay</span>
           </div>
-          <div className="orchestration-status"><span><i /> 8 capabilities connected</span><b>Observe · reason · act · govern</b></div>
-        </aside>
+
+          <p className="sr-only">{`Example question: ${script.prompt} Answer: ${script.answer}`}</p>
+
+          <div className="session-body" aria-hidden="true">
+            <div className="turn turn-user">
+              <span className="turn-role">you</span>
+              <p>
+                {prompt}
+                {isTypingPrompt && <span className="caret" />}
+              </p>
+            </div>
+
+            {isThinking && <p className="session-thinking">planning<span>…</span></p>}
+
+            {script.tools.map((tool, index) => {
+              const start = t.toolsStart + index * TOOL_TICKS;
+              if (tick < start) return null;
+              const done = tick >= start + TOOL_TICKS - 6;
+              return (
+                <div className={`tool${done ? " is-done" : ""}`} key={tool.call}>
+                  <span className="tool-state">
+                    {done ? <Check size={12} strokeWidth={3} /> : <LoaderCircle size={12} className="spin" />}
+                  </span>
+                  <code>{tool.call}</code>
+                  <span className="tool-result">{done ? tool.result : "running"}</span>
+                </div>
+              );
+            })}
+
+            {tick >= t.answerStart && (
+              <div className="turn turn-agent">
+                <span className="turn-role">agent</span>
+                <p>
+                  {answer}
+                  {isStreaming && <span className="caret" />}
+                </p>
+              </div>
+            )}
+          </div>
+
+          <div className="session-foot">
+            <span>Ask</span>
+            {scripts.map((item, index) => (
+              <button
+                key={item.chip}
+                type="button"
+                className={index === session.active ? "is-active" : undefined}
+                aria-pressed={index === session.active}
+                onClick={() => ask(index)}
+              >
+                {item.chip}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="wrap">
+        <dl className="hero-stats">
+          {stats.map((stat) => (
+            <div key={stat.label}>
+              <dt>{stat.label}</dt>
+              <dd>{stat.value}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
     </section>
   );

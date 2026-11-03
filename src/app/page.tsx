@@ -8,6 +8,8 @@ import { Projects } from "@/components/sections/Projects";
 import { Credentials } from "@/components/sections/Credentials";
 import { Contact } from "@/components/sections/Contact";
 import { profile } from "@/data/profile";
+import { experience } from "@/data/experience";
+import { education } from "@/data/education";
 
 export default function Home() {
   const siteUrl = "https://vijayvenkateshjayaraj.github.io";
@@ -21,7 +23,7 @@ export default function Home() {
       contentUrl: profileImageUrl,
       width: 768,
       height: 1024,
-      caption: "Vijayvenkatesh Jayaraj"
+      caption: profile.name
     },
     mainEntity: {
       "@type": "Person",
@@ -32,20 +34,30 @@ export default function Home() {
       image: profileImageUrl,
       email: `mailto:${profile.email}`,
       jobTitle: profile.title,
+      worksFor: {
+        "@type": "Organization",
+        name: experience[0].company
+      },
+      alumniOf: education.map((entry) => ({
+        "@type": "CollegeOrUniversity",
+        name: entry.school
+      })),
       address: {
         "@type": "PostalAddress",
-        addressLocality: "Plainsboro",
+        addressLocality: "Princeton",
         addressRegion: "NJ",
         addressCountry: "US"
       },
       sameAs: [profile.links.linkedin, profile.links.github],
       knowsAbout: [
-        "Data analysis",
-        "Business intelligence",
-        "ETL automation",
-        "Healthcare analytics",
-        "Enterprise systems",
-        "AI automation"
+        "AI agents",
+        "Large language models",
+        "Tool calling",
+        "Document intelligence",
+        "Microsoft Graph",
+        "Azure",
+        "Enterprise automation",
+        "Data engineering"
       ]
     }
   };
@@ -56,9 +68,18 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(profilePageJsonLd) }}
       />
-      <Navbar/>
-      <main><Hero/><About/><Experience/><Skills/><Projects/><Credentials/><Contact/></main>
-      <Footer/>
+      <a className="skip-link" href="#main">Skip to content</a>
+      <Navbar />
+      <main id="main">
+        <Hero />
+        <About />
+        <Projects />
+        <Experience />
+        <Skills />
+        <Credentials />
+        <Contact />
+      </main>
+      <Footer />
     </>
   );
 }

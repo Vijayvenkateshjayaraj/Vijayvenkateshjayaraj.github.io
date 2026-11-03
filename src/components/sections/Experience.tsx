@@ -1,50 +1,28 @@
-import { BriefcaseBusiness, MapPin } from "lucide-react";
 import { experience } from "@/data/experience";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { MatrixTypingText } from "@/components/ui/MatrixTypingText";
+
 export function Experience() {
   return (
-    <section id="experience" className="section alt">
-      <div className="container">
-        <SectionHeading
-          eyebrow="Experience"
-          title="Enterprise experience with a builder’s mindset"
-        />
-        <MatrixTypingText
-          sectionId="experience"
-          text="Across consulting and analytics roles, I have moved between the business question, the data layer, and the production workflow."
-        />
-
-        <div className="timeline">
-          {experience.map((job, i) => (
-            <article className="timeline-card" key={job.title}>
-              <div className="timeline-marker">
-                <BriefcaseBusiness />
+    <section id="experience" className="section">
+      <div className="wrap">
+        <SectionHeading index="03" label="Experience" title="From data pipelines to AI agents" />
+        <ol className="timeline">
+          {experience.map((job) => (
+            <li key={`${job.company}-${job.dates}`} className="role">
+              <div className="role-meta">
+                <span className="role-dates">{job.dates}</span>
+                <span>{job.location}</span>
               </div>
-
-              <div className="job-head">
-                <div>
-                  <p className="job-index">0{i + 1}</p>
-                  <h3>{job.title}</h3>
-                  <strong>{job.company}</strong>
-                </div>
-
-                <div className="job-meta">
-                  <span>{job.dates}</span>
-                  <span>
-                    <MapPin /> {job.location}
-                  </span>
-                </div>
+              <div className="role-body">
+                <h3>{job.title}</h3>
+                <p className="role-company">{job.company}</p>
+                <ul>
+                  {job.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}
+                </ul>
               </div>
-
-              <ul>
-                {job.bullets.map((b) => (
-                  <li key={b}>{b}</li>
-                ))}
-              </ul>
-            </article>
+            </li>
           ))}
-        </div>
+        </ol>
       </div>
     </section>
   );

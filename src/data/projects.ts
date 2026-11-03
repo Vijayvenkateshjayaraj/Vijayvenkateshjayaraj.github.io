@@ -1,6 +1,8 @@
 export const projects = [
   {
     name: "Product Label Comparison & Review Agent",
+    kind: "agent",
+    pipeline: ["Artwork versions", "OCR + vision diff", "AI review", "PDF report"],
     dates: "2025 – Present",
     category: "AI Automation / Computer Vision",
     description:
@@ -26,6 +28,8 @@ export const projects = [
   },
   {
     name: "M365 Governance Intelligence Platform",
+    kind: "platform",
+    pipeline: ["Graph ingestion", "PostgreSQL models", "Entra ID access", "Risk dashboards"],
     dates: "2025 – Present",
     category: "Microsoft 365 Security / Governance Analytics",
     description:
@@ -52,6 +56,8 @@ export const projects = [
   },
   {
   name: "Outlook Calendar Intelligence Agent",
+  kind: "agent",
+  pipeline: ["Chat prompt", "Claude tool call", "Graph API", "Answer + telemetry"],
   dates: "2025 – Present",
   category: "AI Agents / Microsoft Graph Automation",
   description:
@@ -78,6 +84,8 @@ export const projects = [
   },
   {
   name: "Regulatory Intelligence & AI Governance Agent",
+  kind: "agent",
+  pipeline: ["Scrape sources", "SQL versioning", "Change detection", "Claude agent"],
   dates: "2025 – Present",
   category: "AI Agents / Regulatory Automation / AI Governance",
   description:
@@ -103,6 +111,8 @@ export const projects = [
   },
   {
     name: "E-commerce / Business Analytics Agent",
+    kind: "agent",
+    pipeline: ["Business question", "Prompt + SQL", "KPI analysis", "Insight summary"],
     dates: "2025 – Present",
     category: "Business Analytics / AI Agents",
     description:
@@ -127,6 +137,8 @@ export const projects = [
   },
   {
     name: "Business Document Review Agent",
+    kind: "agent",
+    pipeline: ["SharePoint intake", "Extraction", "AI summary", "Structured output"],
     dates: "2025 – Present",
     category: "AI Agents / Workflow Automation",
     description:
@@ -151,6 +163,8 @@ export const projects = [
   },
   {
     name: "NYC Taxi Data Analysis",
+    kind: "data",
+    pipeline: ["Trip data", "SQL CTEs + windows", "Trend analysis", "Reporting"],
     dates: "Aug 2024 – Nov 2024",
     category: "Business Intelligence / SQL Analytics",
     description:
@@ -173,6 +187,8 @@ export const projects = [
   },
   {
     name: "Diabetes Patient Readmission Analysis",
+    kind: "data",
+    pipeline: ["Data cleaning", "Feature analysis", "LogReg + Random Forest", "Risk factors"],
     dates: "Jan 2024 – May 2024",
     category: "Predictive Analytics / Machine Learning",
     description:
@@ -196,6 +212,8 @@ export const projects = [
   },
   {
     name: "Secure File Access Management System",
+    kind: "platform",
+    pipeline: ["Encrypt file", "QR key share", "Access control", "Email alerts"],
     dates: "Jan 2022 – May 2022",
     category: "Security / Software Engineering",
     description:

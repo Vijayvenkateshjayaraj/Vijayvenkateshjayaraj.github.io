@@ -2,15 +2,20 @@ export const profile = {
   name: "Vijayvenkatesh Jayaraj",
   shortName: "Vijay Jayaraj",
 
-  title: "AI & Business Solution Analyst | Decision Intelligence",
+  title: "AI Developer",
 
-  headline: "Engineering AI systems that turn business complexity into confident decisions",
+  role: "AI Developer · Agents & Enterprise Automation",
+
+  headline: "I build AI agents that do real work.",
 
   summary:
-    "I engineer AI-enabled decision systems that turn business data, enterprise workflows, and manual processes into reliable insights, automated reporting, and action.",
+    "I design and ship tool-calling agents, document-intelligence pipelines, and governed AI platforms on Claude, Azure, and Microsoft Graph, so enterprise teams spend less time on manual work and more time on decisions.",
 
   about:
-    "I’m Vijay, an AI & Business Solution Analyst and Business Analytics graduate focused on building dashboards, reporting automations, data validation workflows, cloud analytics solutions, and AI-powered agents. My work combines analytics, automation, and enterprise systems to help business teams reduce manual effort, improve data accuracy, and make faster decisions.",
+    "I’m Vijay, an AI developer with a background in computer science and business analytics. I build AI agents and automation for enterprise teams: artwork and document review with OCR and computer vision, conversational assistants over Microsoft 365 data, regulatory monitoring, and the governance platforms that keep AI accountable.",
+
+  aboutMore:
+    "Before AI, I built ETL and reporting pipelines with SQL, Databricks, and Azure Data Factory. That data-engineering background is why my agents start from clean, validated data and end in outputs a business team can trust.",
 
   email: "vijayvenkateshj012@gmail.com",
   location: "Princeton, New Jersey, USA",
@@ -25,12 +30,13 @@ export const profile = {
   },
 
   availability:
-    "Open to AI & Business Solution Analyst, Business Analyst, BI Analyst, Analytics Automation, and AI Agent-focused roles."
+    "Open to AI Developer, AI Engineer, and applied AI agent roles."
 } as const;
 
 export const navigation = [
   ["About", "#about"],
-  ["Experience", "#experience"],
   ["Projects", "#projects"],
+  ["Experience", "#experience"],
+  ["Stack", "#stack"],
   ["Contact", "#contact"]
 ] as const;

@@ -1,12 +1,35 @@
 "use client";
 import { useEffect, useState } from "react";
-import Image from "next/image";
-import { Menu } from "lucide-react";
+import { Menu, Moon, Sun, X } from "lucide-react";
 import { navigation, profile } from "@/data/profile";
+
+function toggleTheme() {
+  const root = document.documentElement;
+  const current = root.dataset.theme ?? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  const next = current === "dark" ? "light" : "dark";
+  root.dataset.theme = next;
+  try {
+    localStorage.setItem("theme", next);
+  } catch {
+    // Storage can be unavailable (private mode); the choice still applies for this visit.
+  }
+}
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
-  const [activeHref, setActiveHref] = useState("#home");
+  const [scrolled, setScrolled] = useState(false);
+  const [activeHref, setActiveHref] = useState("");
+
+  useEffect(() => {
+    const onScroll = () => {
+      setScrolled(window.scrollY > 8);
+      // Back at the hero, no section link should stay highlighted.
+      if (window.scrollY < window.innerHeight * 0.4) setActiveHref("");
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -14,7 +37,7 @@ export function Navbar() {
         const visibleSection = entries.find((entry) => entry.isIntersecting);
         if (visibleSection) setActiveHref(`#${visibleSection.target.id}`);
       },
-      { rootMargin: "-30% 0px -60%", threshold: 0 }
+      { rootMargin: "-35% 0px -60%", threshold: 0 }
     );
 
     navigation.forEach(([, href]) => {
@@ -25,48 +48,45 @@ export function Navbar() {
     return () => observer.disconnect();
   }, []);
 
-  const replayHero = () => window.dispatchEvent(new CustomEvent("hero-replay"));
-  const handleNavigation = (href: string) => {
-    setOpen(false);
-    setActiveHref(href);
-    if (href === "#home") replayHero();
-  };
-
   return (
-    <header className="nav-wrap">
-      <nav className="container nav" aria-label="Primary navigation">
-        <a className="brand" href="#home" aria-label="Home" onClick={() => handleNavigation("#home")}>
-          <span>VJ</span>
-          <span className="brand-copy">
-            <strong>{profile.shortName}</strong>
-            <small>Decision intelligence portfolio</small>
-          </span>
+    <header className={`nav${scrolled ? " is-scrolled" : ""}${open ? " is-open" : ""}`}>
+      <nav className="wrap nav-inner" aria-label="Primary navigation">
+        <a className="brand" href="#top" aria-label={`${profile.shortName}, back to top`} onClick={() => setOpen(false)}>
+          <span className="brand-mark" aria-hidden="true">vj<i>_</i></span>
+          <span className="brand-name">{profile.shortName}</span>
         </a>
 
-        <button
-          className="nav-toggle"
-          type="button"
-          onClick={() => setOpen((current) => !current)}
-          aria-expanded={open}
-          aria-controls="primary-navigation-links"
-          aria-label="Toggle navigation"
-        >
-          {open ? <Image src="/sidebar-left.svg" width={22} height={22} alt="" /> : <Menu />}
-        </button>
-
-        <div id="primary-navigation-links" className={`nav-links ${open ? "open" : ""}`}>
+        <div id="nav-links" className="nav-links">
           {navigation.map(([label, href]) => (
             <a
               key={href}
               href={href}
               className={activeHref === href ? "active" : undefined}
-              aria-current={activeHref === href ? "page" : undefined}
-              onClick={() => handleNavigation(href)}
+              aria-current={activeHref === href ? "true" : undefined}
+              onClick={() => setOpen(false)}
             >
               {label}
             </a>
           ))}
-          <a className="nav-resume" href={profile.resume} download>Resume</a>
+          <a className="nav-links-resume" href={profile.resume} download onClick={() => setOpen(false)}>Download résumé</a>
+        </div>
+
+        <div className="nav-actions">
+          <button className="icon-btn theme-toggle" type="button" onClick={toggleTheme} aria-label="Toggle light and dark theme">
+            <Sun className="icon-sun" size={17} />
+            <Moon className="icon-moon" size={17} />
+          </button>
+          <a className="btn btn-primary btn-sm nav-resume" href={profile.resume} download>Résumé</a>
+          <button
+            className="icon-btn nav-toggle"
+            type="button"
+            onClick={() => setOpen((current) => !current)}
+            aria-expanded={open}
+            aria-controls="nav-links"
+            aria-label={open ? "Close menu" : "Open menu"}
+          >
+            {open ? <X size={18} /> : <Menu size={18} />}
+          </button>
         </div>
       </nav>
     </header>

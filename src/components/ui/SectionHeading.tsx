@@ -1,3 +1,9 @@
-export function SectionHeading({ eyebrow, title, intro }: { eyebrow: string; title: string; intro?: string }) {
-  return <header className="section-heading"><p className="eyebrow">{eyebrow}</p><h2>{title}</h2>{intro && <p className="section-intro">{intro}</p>}</header>;
+export function SectionHeading({ index, label, title, intro }: { index: string; label: string; title: string; intro?: string }) {
+  return (
+    <header className="section-head">
+      <p className="kicker"><span>{index}</span>{label}</p>
+      <h2>{title}</h2>
+      {intro && <p className="section-intro">{intro}</p>}
+    </header>
+  );
 }

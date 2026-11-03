@@ -1,63 +1,48 @@
-import { CheckCircle2, Compass, Network, Rocket } from "lucide-react";
 import { profile } from "@/data/profile";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-export function About() {
-  const strengths = [
-    "Business analytics & reporting",
-    "SQL reconciliation & data validation",
-    "AI agents & workflow automation",
-    "Cloud analytics & enterprise systems"
-  ];
-  const approach = [
-    {
-      icon: Compass,
-      step: "01",
-      title: "Frame the decision",
-      copy: "Translate the business problem into the right questions, users, controls, and measurable outcome."
-    },
-    {
-      icon: Network,
-      step: "02",
-      title: "Connect the system",
-      copy: "Bring data, APIs, enterprise platforms, models, and validation into one dependable workflow."
-    },
-    {
-      icon: Rocket,
-      step: "03",
-      title: "Operationalize the result",
-      copy: "Ship an experience people can use, monitor, trust, and explain to stakeholders."
-    }
-  ];
 
+const principles = [
+  {
+    title: "Ground",
+    text: "Agents work on real business data in SharePoint, SQL Server, PostgreSQL, and Microsoft Graph, not toy prompts."
+  },
+  {
+    title: "Tool",
+    text: "Each capability is a scoped tool call, such as lookup, compare, or summarize, so model behavior stays predictable."
+  },
+  {
+    title: "Guard",
+    text: "Entra ID auth, access control, and validation checks run before anything reaches a stakeholder."
+  },
+  {
+    title: "Observe",
+    text: "Application Insights telemetry, retries, and readable errors make every run traceable."
+  }
+] as const;
+
+export function About() {
   return (
     <section id="about" className="section">
-      <div className="container about-grid">
-        <SectionHeading
-          eyebrow="Operating approach"
-          title="Business context first. Technical depth where it counts."
-        />
+      <div className="wrap about">
+        <div className="about-copy">
+          <SectionHeading index="01" label="About" title="An AI developer who starts from the business problem" />
+          <p>{profile.about}</p>
+          <p>{profile.aboutMore}</p>
+        </div>
 
-        <div className="about-body">
-          <p className="about-copy">{profile.about}</p>
-
-          <div className="check-grid">
-            {strengths.map((x) => (
-              <span key={x}>
-                <CheckCircle2 />
-                {x}
-              </span>
+        <div className="principles">
+          <p className="principles-label">How I ship agents</p>
+          <ol>
+            {principles.map((principle, index) => (
+              <li key={principle.title}>
+                <span className="principle-index">{String(index + 1).padStart(2, "0")}</span>
+                <div>
+                  <h3>{principle.title}</h3>
+                  <p>{principle.text}</p>
+                </div>
+              </li>
             ))}
-          </div>
-
-          <div className="approach-grid">
-            {approach.map(({ icon: Icon, step, title, copy }) => (
-              <article key={title}>
-                <div><span>{step}</span><Icon /></div>
-                <h3>{title}</h3>
-                <p>{copy}</p>
-              </article>
-            ))}
-          </div>
+          </ol>
         </div>
       </div>
     </section>

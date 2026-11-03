@@ -1,34 +1,49 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
 import { profile } from "@/data/profile";
 import "./globals.css";
 
 const siteUrl = "https://vijayvenkateshjayaraj.github.io";
 const socialImage = "/og.png";
 
-const inter = Inter({
+const sans = Geist({
   subsets: ["latin"],
-  variable: "--font-inter"
+  variable: "--font-sans"
 });
+
+const mono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono"
+});
+
+// Applies a saved light/dark choice before first paint so the page never flashes the wrong theme.
+const themeScript = `(function(){try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t;}catch(e){}})();`;
+
+// Leading with the full name keeps every search snippet tied to one consistent identity.
+const title = `${profile.name} | AI Developer`;
+const description =
+  `${profile.name} (Vijay Jayaraj) is an AI developer in Princeton, NJ building tool-calling agents, document-intelligence pipelines, and governed AI platforms on Claude, Azure, and Microsoft Graph.`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Vijayvenkatesh Jayaraj | AI & Business Solution Analyst",
+    default: title,
     template: "%s | Vijayvenkatesh Jayaraj"
   },
-  description:
-    "Portfolio of Vijay Jayaraj, an AI and business solution analyst building decision-intelligence systems, enterprise automation, analytics platforms, and AI agents.",
+  description,
   keywords: [
     "Vijayvenkatesh Jayaraj",
     "Vijay Venkatesh Jayaraj",
     "Vijay Jayaraj",
-    "AI & Business Solution Analyst",
-    "AI Business Analyst",
-    "Business Solutions Analyst",
-    "BI Analyst",
-    "AI Automation",
-    "Healthcare Data Analyst",
+    "AI Developer",
+    "AI Engineer",
+    "AI Agents",
+    "Claude API",
+    "Tool Calling",
+    "Microsoft Graph",
+    "Copilot Studio",
+    "Azure AI",
+    "Enterprise Automation",
     "Portfolio"
   ],
   authors: [{ name: profile.name, url: siteUrl }],
@@ -40,25 +55,23 @@ export const metadata: Metadata = {
   openGraph: {
     type: "profile",
     url: siteUrl,
-    title: "Vijay Jayaraj | AI & Business Solution Analyst",
-    description:
-      "AI systems that turn business complexity into clear decisions across analytics, automation, governance, and enterprise workflows.",
-    siteName: "Vijay Jayaraj · Decision Intelligence Portfolio",
+    title,
+    description,
+    siteName: profile.name,
     locale: "en_US",
     images: [
       {
         url: socialImage,
         width: 1200,
         height: 630,
-        alt: "Vijay Jayaraj - AI and Business Solution Analyst"
+        alt: `${profile.name} - AI Developer`
       }
     ]
   },
   twitter: {
     card: "summary_large_image",
-    title: "Vijay Jayaraj | AI & Business Solution Analyst",
-    description:
-      "AI systems that turn business complexity into clear decisions across analytics, automation, governance, and enterprise workflows.",
+    title,
+    description,
     images: [socialImage]
   },
   robots: {
@@ -72,14 +85,24 @@ export const metadata: Metadata = {
   }
 };
 
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fafafa" },
+    { media: "(prefers-color-scheme: dark)", color: "#07070b" }
+  ]
+};
+
 export default function RootLayout({
   children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${inter.variable} font-sans antialiased`}>{children}</body>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
+      <body className={`${sans.variable} ${mono.variable}`}>{children}</body>
     </html>
   );
 }

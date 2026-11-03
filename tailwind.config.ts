@@ -14,7 +14,7 @@ const config: Config = {
         line: "rgba(148, 163, 184, 0.18)"
       },
       fontFamily: {
-        sans: ["var(--font-inter)", "system-ui", "sans-serif"]
+        sans: ["var(--font-sans)", "system-ui", "sans-serif"]
       },
       boxShadow: {
         glow: "0 0 48px rgba(56, 189, 248, 0.16)",
